@@ -2435,31 +2435,31 @@
       <div class="avatar-grid">
         <div class="avatar-card" data-mascot="teddy" onclick="selectMascot('teddy',this)">
           <span class="avatar-emoji">🧸</span>
-          <div class="avatar-name">Teddy</div>
+          <div class="avatar-name">teddy</div>
           <div class="avatar-personality">Warm & encouraging. Never lets you give up.</div>
           <div class="ob-check">✓</div>
         </div>
         <div class="avatar-card" data-mascot="panda" onclick="selectMascot('panda',this)">
           <span class="avatar-emoji">🐼</span>
-          <div class="avatar-name">Panda</div>
+          <div class="avatar-name">Mr.Panda</div>
           <div class="avatar-personality">Calm & focused. Meditates between sessions.</div>
           <div class="ob-check">✓</div>
         </div>
         <div class="avatar-card" data-mascot="cat" onclick="selectMascot('cat',this)">
           <span class="avatar-emoji">🐱</span>
-          <div class="avatar-name">Cat</div>
+          <div class="avatar-name">kitty</div>
           <div class="avatar-personality">Mysterious & sharp. Secretly your biggest fan.</div>
           <div class="ob-check">✓</div>
         </div>
         <div class="avatar-card" data-mascot="dog" onclick="selectMascot('dog',this)">
           <span class="avatar-emoji">🐶</span>
-          <div class="avatar-name">Dog</div>
+          <div class="avatar-name">puppy</div>
           <div class="avatar-personality">Enthusiastic & loyal. Celebrates every win.</div>
           <div class="ob-check">✓</div>
         </div>
         <div class="avatar-card" data-mascot="frog" onclick="selectMascot('frog',this)">
           <span class="avatar-emoji">🐸</span>
-          <div class="avatar-name">Frog</div>
+          <div class="avatar-name">froggy</div>
           <div class="avatar-personality">Chill & wise. Knows every study hack.</div>
           <div class="ob-check">✓</div>
         </div>
@@ -2872,19 +2872,19 @@
               <div class="section-label">Choose Avatar</div>
               <div class="companion-avatar-grid">
                 <div class="comp-avatar-option selected" data-mascot="panda" onclick="setMascotType('panda',this)">
-                  <span>🐼</span><span class="comp-avatar-label">Panda</span>
+                  <span>🐼</span><span class="comp-avatar-label">Mr.Panda</span>
                 </div>
                 <div class="comp-avatar-option" data-mascot="teddy" onclick="setMascotType('teddy',this)">
-                  <span>🧸</span><span class="comp-avatar-label">Teddy</span>
+                  <span>🧸</span><span class="comp-avatar-label">teddy</span>
                 </div>
                 <div class="comp-avatar-option" data-mascot="cat" onclick="setMascotType('cat',this)">
-                  <span>🐱</span><span class="comp-avatar-label">Cat</span>
+                  <span>🐱</span><span class="comp-avatar-label">kitty</span>
                 </div>
                 <div class="comp-avatar-option" data-mascot="dog" onclick="setMascotType('dog',this)">
-                  <span>🐶</span><span class="comp-avatar-label">Dog</span>
+                  <span>🐶</span><span class="comp-avatar-label">puppy</span>
                 </div>
                 <div class="comp-avatar-option" data-mascot="frog" onclick="setMascotType('frog',this)">
-                  <span>🐸</span><span class="comp-avatar-label">Frog</span>
+                  <span>🐸</span><span class="comp-avatar-label">froggy</span>
                 </div>
               </div>
               <div class="divider"></div>
@@ -3018,7 +3018,13 @@
       if (!e || !p) return authError("Enter email and password");
       if (firebaseConfig.apiKey === "WAITING_FOR_USER_API_KEY") return authError("Firebase not configured yet.");
       
-      firebase.auth().signInWithEmailAndPassword(e, p).catch(err => authError(err.message));
+      firebase.auth().signInWithEmailAndPassword(e, p).catch(err => {
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+          authError('incorrect password try again!');
+        } else {
+          authError(err.message);
+        }
+      });
     }
     
     function signupBtn() {
