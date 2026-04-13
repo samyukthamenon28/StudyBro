@@ -2393,9 +2393,28 @@
       color: var(--t3)
     }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
 </head>
 
 <body>
+
+  <!-- AUTHENTICATION OVERLAY -->
+  <div id="auth-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg1);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg2);padding:40px;border-radius:var(--r24);border:1px solid var(--border);width:100%;max-width:400px;text-align:center;">
+      <h2 style="margin:0 0 8px;font-size:24px;font-weight:800;color:var(--t1)">StudyBro Cloud</h2>
+      <p style="margin:0 0 24px;color:var(--t2);font-size:14px">Login or create an account to save your garden globally.</p>
+      
+      <input type="email" id="auth-email" class="input mt8" placeholder="Email Address" style="margin-bottom:12px;width:calc(100% - 32px)">
+      <input type="password" id="auth-pass" class="input" placeholder="Password" style="margin-bottom:24px;width:calc(100% - 32px)">
+      
+      <button class="btn" onclick="loginBtn()" style="width:100%;margin-bottom:12px">Login</button>
+      <button class="btn btn-ghost" onclick="signupBtn()" style="width:100%">Create Account</button>
+      
+      <div id="auth-error" style="color:var(--orange);font-size:13px;margin-top:16px;height:20px;"></div>
+    </div>
+  </div>
+
 
   <!-- ═══════════════════════════════════════
      ONBOARDING
@@ -2967,6 +2986,50 @@
   <div class="toast hidden" id="toast"></div>
 
   <script>
+    // --- FIREBASE AUTHENTICATION CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCFAGjtCNGZBdzZvbgclJOwvrvEXB6YDQ",
+      authDomain: "studybro-db.firebaseapp.com",
+      projectId: "studybro-db",
+      storageBucket: "studybro-db.firebasestorage.app",
+      messagingSenderId: "700692203825",
+      appId: "1:700692203825:web:f5c903fdbef5f6a802c810",
+      measurementId: "G-3PJ8QGJ3SL"
+    };
+
+    if (firebaseConfig.apiKey !== "WAITING_FOR_USER_API_KEY") {
+      firebase.initializeApp(firebaseConfig);
+      firebase.auth().onAuthStateChanged((user) => {
+        const overlay = document.getElementById('auth-overlay');
+        if (user) {
+          overlay.style.display = 'none';
+          document.getElementById('profile-name').textContent = user.email.split('@')[0];
+        } else {
+          overlay.style.display = 'flex';
+        }
+      });
+    }
+
+    function authError(msg) { document.getElementById('auth-error').textContent = msg; }
+    
+    function loginBtn() {
+      const e = document.getElementById('auth-email').value;
+      const p = document.getElementById('auth-pass').value;
+      if (!e || !p) return authError("Enter email and password");
+      if (firebaseConfig.apiKey === "WAITING_FOR_USER_API_KEY") return authError("Firebase not configured yet.");
+      
+      firebase.auth().signInWithEmailAndPassword(e, p).catch(err => authError(err.message));
+    }
+    
+    function signupBtn() {
+      const e = document.getElementById('auth-email').value;
+      const p = document.getElementById('auth-pass').value;
+      if (!e || !p) return authError("Enter email and password");
+      if (firebaseConfig.apiKey === "WAITING_FOR_USER_API_KEY") return authError("Firebase not configured yet.");
+      
+      firebase.auth().createUserWithEmailAndPassword(e, p).catch(err => authError(err.message));
+    }
+    // -------------------------------------
     // ═══════════════════════════════════════════════════
     //  APP STATE
     // ═══════════════════════════════════════════════════
