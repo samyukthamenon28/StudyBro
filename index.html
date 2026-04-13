@@ -1,0 +1,4184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyBRO</title>
+  <style>
+    /* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg0: #0b0d12;
+      --bg1: #13151d;
+      --bg2: #1a1d28;
+      --bg3: #222638;
+      --bg4: #2a2f47;
+      --t1: #eef0fb;
+      --t2: #9ba3c8;
+      --t3: #5a6288;
+      --t4: #353a58;
+      --green: #6eefaa;
+      --green2: #3dd68c;
+      --green-bg: rgba(110, 239, 170, .08);
+      --green-glow: rgba(110, 239, 170, .2);
+      --blue: #7eb8ff;
+      --blue-bg: rgba(126, 184, 255, .08);
+      --amber: #ffd166;
+      --amber-bg: rgba(255, 209, 102, .08);
+      --rose: #ff8faa;
+      --rose-bg: rgba(255, 143, 170, .08);
+      --border: rgba(255, 255, 255, .06);
+      --border2: rgba(255, 255, 255, .11);
+      --r4: 4px;
+      --r8: 8px;
+      --r12: 12px;
+      --r16: 16px;
+      --r24: 24px;
+      --r32: 32px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, .4);
+      --shadow-lg: 0 8px 48px rgba(0, 0, 0, .6);
+      --f: 'Outfit', sans-serif;
+      --fm: 'JetBrains Mono', monospace;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --spring: cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    [data-theme="light"] {
+      --bg0: #f0f2f8;
+      --bg1: #fff;
+      --bg2: #f5f7ff;
+      --bg3: #eaecf8;
+      --bg4: #dde0f5;
+      --t1: #1a1d2e;
+      --t2: #4a5070;
+      --t3: #8890b0;
+      --t4: #c0c4da;
+      --border: rgba(0, 0, 0, .06);
+      --border2: rgba(0, 0, 0, .12);
+      --shadow: 0 4px 24px rgba(0, 0, 0, .08);
+      --shadow-lg: 0 8px 48px rgba(0, 0, 0, .12);
+      --green: #1a8c5a;
+      --green-bg: rgba(26, 140, 90, .07);
+      --green-glow: rgba(26, 140, 90, .15);
+      --blue: #2563a8;
+      --blue-bg: rgba(37, 99, 168, .07);
+      --amber: #b07800;
+      --amber-bg: rgba(176, 120, 0, .07);
+      --rose: #c0394f;
+      --rose-bg: rgba(192, 57, 79, .07);
+    }
+
+    /* ═══════════════════════════════════════
+   BASE
+═══════════════════════════════════════ */
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--f);
+      background: var(--bg0);
+      color: var(--t1);
+      min-height: 100vh;
+      overflow: hidden;
+      transition: background .3s, color .3s
+    }
+
+    button {
+      font-family: var(--f);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all .2s var(--ease)
+    }
+
+    input,
+    textarea,
+    select {
+      font-family: var(--f);
+      outline: none
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--t4);
+      border-radius: 2px
+    }
+
+    /* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+    #app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 72px;
+      background: var(--bg1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 100;
+      transition: background .3s;
+    }
+
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      background: var(--green);
+      border-radius: var(--r12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+
+    .nav-item {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      color: var(--t3);
+      font-size: 11px;
+      font-weight: 500;
+      transition: all .2s var(--ease);
+      position: relative;
+      cursor: pointer;
+      border: none;
+    }
+
+    .nav-item .icon {
+      font-size: 20px;
+      line-height: 1;
+      transition: transform .2s var(--spring)
+    }
+
+    .nav-item:hover {
+      color: var(--t2);
+      background: var(--bg2)
+    }
+
+    .nav-item:hover .icon {
+      transform: scale(1.15)
+    }
+
+    .nav-item.active {
+      color: var(--green);
+      background: var(--green-bg)
+    }
+
+    .nav-item.active .icon {
+      transform: scale(1.1)
+    }
+
+    .nav-item .nav-label {
+      font-size: 9px;
+      letter-spacing: .3px;
+      font-weight: 600;
+      text-transform: uppercase;
+      opacity: .8
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r8);
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--t2);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--border2);
+      color: var(--t1)
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg0)
+    }
+
+    /* PAGES */
+    .page {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .3s var(--ease), transform .3s var(--ease);
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0)
+    }
+
+    .page-inner {
+      padding: 40px 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+      min-height: 100%
+    }
+
+    /* ═══════════════════════════════════════
+   TYPOGRAPHY & COMPONENTS
+═══════════════════════════════════════ */
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      color: var(--t1)
+    }
+
+    .page-sub {
+      color: var(--t2);
+      font-size: 15px;
+      margin-top: 6px;
+      line-height: 1.6
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--t3);
+      font-family: var(--fm);
+      margin-bottom: 12px
+    }
+
+    .card {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r16);
+      padding: 20px;
+      transition: background .3s, border .2s
+    }
+
+    .card-sm {
+      padding: 14px;
+      border-radius: var(--r12)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--fm)
+    }
+
+    .badge-green {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .badge-blue {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .badge-amber {
+      background: var(--amber-bg);
+      color: var(--amber)
+    }
+
+    .badge-rose {
+      background: var(--rose-bg);
+      color: var(--rose)
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--r12);
+      font-size: 14px;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: var(--bg2);
+      color: var(--t1);
+      transition: all .2s var(--ease);
+      letter-spacing: -.1px;
+    }
+
+    .btn:hover {
+      border-color: var(--border2);
+      background: var(--bg3);
+      transform: translateY(-1px)
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.98)
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #0b1a12;
+      border-color: var(--green);
+      font-weight: 700
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+      box-shadow: 0 4px 20px var(--green-glow)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--t2)
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg2);
+      border-color: var(--border);
+      color: var(--t1)
+    }
+
+    .btn-lg {
+      padding: 14px 32px;
+      font-size: 16px;
+      border-radius: var(--r16)
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: var(--r8)
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: var(--r12)
+    }
+
+    /* Input */
+    .input {
+      width: 100%;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--t1);
+      border-radius: var(--r12);
+      padding: 12px 16px;
+      font-size: 14px;
+      transition: border-color .2s;
+    }
+
+    .input:focus {
+      border-color: var(--green)
+    }
+
+    /* Toggle */
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: var(--bg4);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background .2s;
+      flex-shrink: 0;
+      border: none
+    }
+
+    .toggle.on {
+      background: var(--green)
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 9px;
+      top: 3px;
+      left: 3px;
+      transition: left .2s var(--spring)
+    }
+
+    .toggle.on::after {
+      left: 23px
+    }
+
+    /* Progress bar */
+    .prog-track {
+      height: 4px;
+      background: var(--bg4);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width .4s var(--ease)
+    }
+
+    .prog-fill.green {
+      background: var(--green)
+    }
+
+    .prog-fill.blue {
+      background: var(--blue)
+    }
+
+    /* Range input */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: none;
+      height: 4px;
+      width: 100%
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 4px;
+      background: var(--bg4);
+      border-radius: 2px
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2px solid var(--bg0);
+      margin-top: -7px;
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--green-glow)
+    }
+
+    /* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-8px)
+      }
+    }
+
+    @keyframes blink {
+
+      0%,
+      90%,
+      100% {
+        transform: scaleY(1)
+      }
+
+      95% {
+        transform: scaleY(.1)
+      }
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.04)
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      40% {
+        transform: translateY(-10px)
+      }
+
+      70% {
+        transform: translateY(-4px)
+      }
+    }
+
+    @keyframes wiggle {
+
+      0%,
+      100% {
+        transform: rotate(0)
+      }
+
+      25% {
+        transform: rotate(-8deg)
+      }
+
+      75% {
+        transform: rotate(8deg)
+      }
+    }
+
+    @keyframes grow {
+      from {
+        transform: scaleY(0);
+        transform-origin: bottom
+      }
+
+      to {
+        transform: scaleY(1)
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: .5
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0);
+        opacity: .6
+      }
+
+      100% {
+        transform: scale(3);
+        opacity: 0
+      }
+    }
+
+    @keyframes sprout {
+      0% {
+        transform: scale(0) translateY(10px);
+        opacity: 0
+      }
+
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    @keyframes confetti {
+      0% {
+        transform: translateY(0) rotate(0);
+        opacity: 1
+      }
+
+      100% {
+        transform: translateY(80px) rotate(720deg);
+        opacity: 0
+      }
+    }
+
+    @keyframes timerPop {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.02)
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(.6);
+        opacity: 0
+      }
+
+      80% {
+        transform: scale(1.08)
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: 0
+      }
+    }
+
+    @keyframes dotPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .4
+      }
+
+      50% {
+        transform: scale(1.3);
+        opacity: 1
+      }
+    }
+
+    @keyframes avatarEntrance {
+      0% {
+        transform: scale(.5) translateY(30px);
+        opacity: 0
+      }
+
+      60% {
+        transform: scale(1.06) translateY(-4px)
+      }
+
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    /* ═══════════════════════════════════════
+   ONBOARDING
+═══════════════════════════════════════ */
+    #onboarding {
+      position: fixed;
+      inset: 0;
+      background: var(--bg0);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      overflow-y: auto;
+    }
+
+    .ob-step {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 780px;
+      animation: fadeUp .5s var(--ease) both
+    }
+
+    .ob-step.active {
+      display: flex
+    }
+
+    .ob-header {
+      text-align: center;
+      margin-bottom: 40px
+    }
+
+    .ob-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -.8px
+    }
+
+    .ob-sub {
+      color: var(--t2);
+      margin-top: 8px;
+      font-size: 16px
+    }
+
+    .ob-step-dots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px
+    }
+
+    .ob-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--bg4);
+      transition: all .3s var(--spring)
+    }
+
+    .ob-dot.active {
+      width: 24px;
+      background: var(--green)
+    }
+
+    /* Avatar cards */
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 32px
+    }
+
+    .avatar-card {
+      background: var(--bg1);
+      border: 2px solid var(--border);
+      border-radius: var(--r24);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all .25s var(--spring);
+      animation: avatarEntrance .5s var(--spring) both;
+    }
+
+    .avatar-card:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .avatar-card:nth-child(2) {
+      animation-delay: .1s
+    }
+
+    .avatar-card:nth-child(3) {
+      animation-delay: .15s
+    }
+
+    .avatar-card:nth-child(4) {
+      animation-delay: .2s
+    }
+
+    .avatar-card:nth-child(5) {
+      animation-delay: .25s
+    }
+
+    .avatar-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: var(--shadow)
+    }
+
+    .avatar-card.selected {
+      border-color: var(--green);
+      background: var(--green-bg);
+      box-shadow: 0 0 0 4px var(--green-glow)
+    }
+
+    .avatar-emoji {
+      font-size: 56px;
+      line-height: 1;
+      animation: breathe 3s ease-in-out infinite;
+      display: block;
+      transition: all .2s
+    }
+
+    .avatar-card:hover .avatar-emoji {
+      animation: bounce .6s var(--spring)
+    }
+
+    .avatar-card.selected .avatar-emoji {
+      animation: wiggle .5s ease
+    }
+
+    .avatar-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--t1)
+    }
+
+    .avatar-personality {
+      font-size: 12px;
+      color: var(--t3);
+      text-align: center;
+      line-height: 1.4
+    }
+
+    .ob-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #0b1a12;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      animation: popIn .3s var(--spring);
+    }
+
+    .avatar-card.selected .ob-check {
+      display: flex
+    }
+
+    .ob-continue {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      margin-top: 8px
+    }
+
+    .ob-continue.show {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    /* Plant cards */
+    .plant-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 32px
+    }
+
+    .plant-card {
+      background: var(--bg1);
+      border: 2px solid var(--border);
+      border-radius: var(--r24);
+      padding: 28px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all .25s var(--spring);
+      animation: avatarEntrance .5s var(--spring) both;
+    }
+
+    .plant-card:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .plant-card:nth-child(2) {
+      animation-delay: .1s
+    }
+
+    .plant-card:nth-child(3) {
+      animation-delay: .15s
+    }
+
+    .plant-card:nth-child(4) {
+      animation-delay: .2s
+    }
+
+    .plant-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow)
+    }
+
+    .plant-card.selected {
+      border-color: var(--green);
+      background: var(--green-bg);
+      box-shadow: 0 0 0 4px var(--green-glow)
+    }
+
+    .plant-emoji {
+      font-size: 52px;
+      line-height: 1;
+      animation: float 4s ease-in-out infinite
+    }
+
+    .plant-card.selected .plant-emoji {
+      animation: sprout .4s var(--spring)
+    }
+
+    .plant-name {
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    .plant-type {
+      font-size: 12px;
+      color: var(--t3)
+    }
+
+    /* Confirmation */
+    .ob-confirm {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%
+    }
+
+    .confirm-duo {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      padding: 40px;
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r32);
+      animation: popIn .5s var(--spring)
+    }
+
+    .confirm-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center
+    }
+
+    .confirm-emoji {
+      font-size: 64px;
+      animation: float 3s ease-in-out infinite
+    }
+
+    .confirm-label {
+      font-size: 13px;
+      color: var(--t3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--fm)
+    }
+
+    .confirm-name {
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    .confirm-plus {
+      font-size: 28px;
+      color: var(--t4)
+    }
+
+    .confirm-msg {
+      color: var(--t2);
+      font-size: 15px;
+      text-align: center
+    }
+
+    .name-input-wrap {
+      width: 100%;
+      max-width: 320px;
+      position: relative
+    }
+
+    .name-input-wrap label {
+      display: block;
+      font-size: 12px;
+      color: var(--t3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--fm);
+      margin-bottom: 8px
+    }
+
+    /* ═══════════════════════════════════════
+   DASHBOARD PAGE
+═══════════════════════════════════════ */
+    .dash-hero {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r24);
+      padding: 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dash-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, var(--green-bg) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .dash-hero-text {
+      flex: 1
+    }
+
+    .dash-hero-text h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -.5px
+    }
+
+    .dash-hero-text p {
+      color: var(--t2);
+      margin-top: 6px;
+      font-size: 15px;
+      line-height: 1.6
+    }
+
+    .dash-hero-text .btn-row {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px
+    }
+
+    .dash-mascot {
+      font-size: 72px;
+      flex-shrink: 0;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .3))
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px
+    }
+
+    .stat-card {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r16);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: transform .2s var(--ease), box-shadow .2s;
+      animation: fadeUp .5s var(--ease) both;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow)
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: .1s
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: .15s
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: .2s
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      font-family: var(--fm)
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--t3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--t2);
+      margin-top: 2px
+    }
+
+    .upload-area {
+      background: var(--bg1);
+      border: 2px dashed var(--border);
+      border-radius: var(--r16);
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .upload-area:hover {
+      border-color: var(--border2);
+      background: var(--bg2)
+    }
+
+    .upload-area.drag {
+      border-color: var(--green);
+      background: var(--green-bg)
+    }
+
+    .upload-area input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%
+    }
+
+    .upload-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+      display: block
+    }
+
+    .upload-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--t1)
+    }
+
+    .upload-hint {
+      font-size: 13px;
+      color: var(--t3);
+      margin-top: 4px
+    }
+
+    .recent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px
+    }
+
+    .session-card {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r16);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all .2s var(--ease);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeUp .4s var(--ease) both;
+    }
+
+    .session-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow)
+    }
+
+    .session-card-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--t1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .session-card-meta {
+      font-size: 12px;
+      color: var(--t3);
+      font-family: var(--fm)
+    }
+
+    .session-card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    /* ═══════════════════════════════════════
+   STUDY PAGE
+═══════════════════════════════════════ */
+    .study-layout {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      gap: 0;
+    }
+
+    .study-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg1);
+      flex-shrink: 0;
+    }
+
+    .study-session-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -.2px
+    }
+
+    .study-progress-wrap {
+      flex: 1;
+      max-width: 280px;
+      margin: 0 20px
+    }
+
+    .study-prog-label {
+      font-size: 11px;
+      color: var(--t3);
+      font-family: var(--fm);
+      margin-bottom: 4px;
+      text-align: right
+    }
+
+    .study-reader {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .reader-inner {
+      max-width: 660px;
+      margin: 0 auto;
+      width: 100%
+    }
+
+    .text-chunk {
+      padding: 14px 20px;
+      border-radius: var(--r12);
+      margin-bottom: 8px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--t2);
+      cursor: pointer;
+      transition: all .25s var(--ease);
+      border: 1.5px solid transparent;
+    }
+
+    .text-chunk:hover {
+      color: var(--t1);
+      background: var(--bg2)
+    }
+
+    .text-chunk.active {
+      color: var(--t1);
+      background: var(--green-bg);
+      border-color: rgba(110, 239, 170, .2)
+    }
+
+    .text-chunk.played {
+      color: var(--t3)
+    }
+
+    .chunk-section-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 20px 0 8px;
+      font-family: var(--fm);
+    }
+
+    .study-player {
+      background: var(--bg1);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      flex-shrink: 0;
+    }
+
+    .player-inner {
+      max-width: 660px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px
+    }
+
+    .player-speed-row {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .speed-label {
+      font-size: 12px;
+      color: var(--t3);
+      font-family: var(--fm);
+      white-space: nowrap
+    }
+
+    .speed-val {
+      font-size: 12px;
+      color: var(--green);
+      font-family: var(--fm);
+      min-width: 28px;
+      text-align: right
+    }
+
+    .play-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 26px;
+      background: var(--green);
+      color: #0b1a12;
+      font-size: 22px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s var(--spring);
+      ;
+      flex-shrink: 0;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 20px var(--green-glow)
+    }
+
+    .play-btn:active {
+      transform: scale(.95)
+    }
+
+    .ctrl-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r12);
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--t2);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ctrl-btn:hover {
+      border-color: var(--border2);
+      color: var(--t1);
+      background: var(--bg3)
+    }
+
+    .study-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+
+    .mascot-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .mascot-mini-emoji {
+      font-size: 32px;
+      animation: breathe 4s ease-in-out infinite;
+      cursor: pointer
+    }
+
+    .mascot-bubble-mini {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--t2);
+      max-width: 180px;
+      animation: fadeIn .3s ease;
+      position: relative;
+    }
+
+    .plant-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .plant-mini-emoji {
+      font-size: 28px;
+      transition: all .5s var(--spring)
+    }
+
+    .plant-mini-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: flex-end
+    }
+
+    .plant-mini-prog {
+      width: 80px
+    }
+
+    .plant-mini-label {
+      font-size: 10px;
+      color: var(--t3);
+      font-family: var(--fm)
+    }
+
+    /* Flashcard overlay */
+    .fc-overlay {
+      position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%);
+      width: 500px; max-width: 90vw; background: transparent;
+      z-index: 50; animation: slideUp .3s var(--spring); perspective: 1000px;
+    }
+    .fc-header { display:flex; justify-content: space-between; align-items:center; margin-bottom: 12px; background:var(--bg1); padding:10px 16px; border-radius:var(--r12); border:1.5px solid var(--border); box-shadow:var(--shadow); }
+    .fc-card {
+      width: 100%; height: 280px; position: relative; transition: transform 0.6s var(--spring);
+      transform-style: preserve-3d; cursor: pointer;
+    }
+    .fc-card.flipped { transform: rotateY(180deg); }
+    .fc-face {
+      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      background: var(--bg1); border: 1.5px solid var(--border); border-radius: var(--r24); padding: 32px;
+      box-shadow: var(--shadow-lg); font-size: 16px; line-height: 1.6; color: var(--t1);
+    }
+    .fc-back { transform: rotateY(180deg); background: var(--bg2); border-color: var(--blue); color:var(--blue); }
+    .fc-controls { display:flex; justify-content: center; gap: 12px; margin-top: 16px; opacity:0; pointer-events:none; transition:opacity .3s; }
+    .fc-card.flipped ~ .fc-controls { opacity:1; pointer-events:all; }
+
+    .chunk-checkbox {
+      position: absolute; right: 12px; top: 12px;
+      width: 18px; height: 18px;
+      cursor: pointer; accent-color: var(--blue);
+      z-index: 10;
+    }
+    .text-chunk { position: relative; }
+
+    /* Quiz overlay */
+    .quiz-overlay {
+      position: absolute;
+      bottom: 160px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      max-width: 90vw;
+      background: var(--bg1);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r24);
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .3s var(--spring);
+      z-index: 50;
+    }
+
+    .quiz-q {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      line-height: 1.5
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .quiz-opt {
+      padding: 11px 16px;
+      border-radius: var(--r12);
+      border: 1.5px solid var(--border);
+      background: var(--bg2);
+      color: var(--t1);
+      text-align: left;
+      font-size: 14px;
+      transition: all .15s;
+      cursor: pointer;
+      font-family: var(--f);
+    }
+
+    .quiz-opt:hover:not(:disabled) {
+      border-color: var(--border2);
+      background: var(--bg3)
+    }
+
+    .quiz-opt.correct {
+      border-color: var(--green);
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .quiz-opt.wrong {
+      border-color: var(--rose);
+      background: var(--rose-bg);
+      color: var(--rose)
+    }
+
+    .quiz-opt.selected {
+      border-color: var(--blue);
+      background: var(--blue-bg)
+    }
+
+    .quiz-feedback {
+      padding: 10px 14px;
+      border-radius: var(--r12);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      animation: fadeIn .2s ease
+    }
+
+    .quiz-feedback.good {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(110, 239, 170, .15)
+    }
+
+    .quiz-feedback.bad {
+      background: var(--rose-bg);
+      color: var(--rose);
+      border: 1px solid rgba(255, 143, 170, .15)
+    }
+
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px
+    }
+
+    .quiz-dots {
+      display: flex;
+      gap: 4px
+    }
+
+    .quiz-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--bg4)
+    }
+
+    .quiz-dot.pass {
+      background: var(--green)
+    }
+
+    .quiz-dot.fail {
+      background: var(--rose)
+    }
+
+    /* ═══════════════════════════════════════
+   FOCUS TIMER PAGE
+═══════════════════════════════════════ */
+    .focus-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px;
+      gap: 40px;
+    }
+
+    .timer-card {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r32);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, var(--green-bg) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .timer-presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .preset {
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--t2);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--fm);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .preset:hover {
+      border-color: var(--border2);
+      color: var(--t1)
+    }
+
+    .preset.active {
+      border-color: var(--green);
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .timer-ring-wrap {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      flex-shrink: 0
+    }
+
+    .timer-ring-svg {
+      width: 200px;
+      height: 200px;
+      transform: rotate(-90deg)
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: var(--bg4);
+      stroke-width: 10;
+      stroke-linecap: round
+    }
+
+    .ring-prog {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+      stroke: var(--green)
+    }
+
+    .ring-prog.break {
+      stroke: var(--blue)
+    }
+
+    .timer-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .timer-digits {
+      font-size: 40px;
+      font-weight: 800;
+      font-family: var(--fm);
+      letter-spacing: -1px
+    }
+
+    .timer-mode {
+      font-size: 11px;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700
+    }
+
+    .timer-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .timer-start {
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: var(--green);
+      color: #0b1a12;
+      font-size: 24px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s var(--spring);
+    }
+
+    .timer-start:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 24px var(--green-glow)
+    }
+
+    .timer-start:active {
+      transform: scale(.95)
+    }
+
+    .focus-mascot {
+      font-size: 80px;
+      animation: breathe 4s ease-in-out infinite;
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .3))
+    }
+
+    .pomodoro-row {
+      display: flex;
+      gap: 6px;
+      align-items: center
+    }
+
+    .pom-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background: var(--bg4)
+    }
+
+    .pom-dot.done {
+      background: var(--green)
+    }
+
+    .break-mode-banner {
+      background: var(--blue-bg);
+      border: 1px solid rgba(126, 184, 255, .15);
+      border-radius: var(--r12);
+      padding: 10px 18px;
+      font-size: 13px;
+      color: var(--blue);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .focus-plant-display {
+      font-size: 72px;
+      transition: all 1s var(--spring);
+      animation: float 4s ease-in-out infinite
+    }
+
+    /* ═══════════════════════════════════════
+   GARDEN PAGE
+═══════════════════════════════════════ */
+    .garden-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px
+    }
+
+    .garden-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px
+    }
+
+    .garden-plant-card {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r16);
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s var(--ease);
+      animation: popIn .4s var(--spring) both;
+    }
+
+    .garden-plant-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow)
+    }
+
+    .garden-plant-emoji {
+      font-size: 44px
+    }
+
+    .garden-plant-date {
+      font-size: 10px;
+      color: var(--t3);
+      font-family: var(--fm)
+    }
+
+    .garden-plant-dur {
+      font-size: 12px;
+      color: var(--t2);
+      font-weight: 600
+    }
+
+    .garden-plant-prog {
+      width: 100%;
+      margin-top: 4px
+    }
+
+    .garden-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 80px 20px;
+      color: var(--t3);
+      text-align: center;
+    }
+
+    .garden-empty .big-emoji {
+      font-size: 64px;
+      animation: float 3s ease-in-out infinite
+    }
+
+    /* ═══════════════════════════════════════
+   PROGRESS PAGE
+═══════════════════════════════════════ */
+    .progress-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px
+    }
+
+    .progress-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .prog-stat {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r16);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .prog-stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      font-family: var(--fm);
+      letter-spacing: -1px
+    }
+
+    .prog-stat-label {
+      font-size: 12px;
+      color: var(--t3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px
+    }
+
+    .streak-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px
+    }
+
+    .streak-day {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: var(--bg4)
+    }
+
+    .streak-day.done {
+      background: var(--green)
+    }
+
+    .weak-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .weak-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+    }
+
+    .weak-item-topic {
+      font-size: 14px;
+      font-weight: 500
+    }
+
+    .weak-item-score {
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--rose)
+    }
+
+    .quiz-history-item {
+      padding: 12px 16px;
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all .15s;
+    }
+
+    .quiz-history-item:hover {
+      border-color: var(--border2)
+    }
+
+    /* ═══════════════════════════════════════
+   COMPANION PAGE
+═══════════════════════════════════════ */
+    .companion-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px
+    }
+
+    .companion-main {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r24);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .companion-avatar {
+      font-size: 100px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .3))
+    }
+
+    .companion-name {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.5px
+    }
+
+    .companion-mood {
+      font-size: 13px;
+      color: var(--t3);
+      font-family: var(--fm);
+      text-transform: uppercase;
+      letter-spacing: 1px
+    }
+
+    .companion-speech {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r16);
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--t2);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 280px;
+      width: 100%;
+      position: relative;
+    }
+
+    .companion-speech::before {
+      content: '▲';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--border);
+    }
+
+    .companion-settings {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .companion-avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px
+    }
+
+    .comp-avatar-option {
+      padding: 10px 6px;
+      border-radius: var(--r12);
+      border: 2px solid var(--border);
+      background: var(--bg2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 28px;
+      transition: all .2s var(--spring);
+    }
+
+    .comp-avatar-option:hover {
+      border-color: var(--border2);
+      transform: scale(1.05)
+    }
+
+    .comp-avatar-option.selected {
+      border-color: var(--green);
+      background: var(--green-bg)
+    }
+
+    .comp-avatar-label {
+      font-size: 9px;
+      color: var(--t3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .acc-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .acc-chip {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg2);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--t2);
+    }
+
+    .acc-chip:hover {
+      border-color: var(--border2);
+      color: var(--t1)
+    }
+
+    .acc-chip.active {
+      border-color: var(--green);
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .setting-row:last-child {
+      border-bottom: none
+    }
+
+    .setting-label {
+      font-size: 14px;
+      font-weight: 500
+    }
+
+    .setting-sub {
+      font-size: 12px;
+      color: var(--t3);
+      margin-top: 2px
+    }
+
+    /* ═══════════════════════════════════════
+   SPEECH BUBBLE SYSTEM
+═══════════════════════════════════════ */
+    .mascot-speech {
+      position: fixed;
+      bottom: 80px;
+      left: 88px;
+      background: var(--bg1);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r16);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--t2);
+      box-shadow: var(--shadow);
+      z-index: 200;
+      max-width: 220px;
+      line-height: 1.5;
+      animation: slideUp .3s var(--spring);
+      pointer-events: none;
+    }
+
+    .mascot-speech::after {
+      content: '▼';
+      position: absolute;
+      bottom: -14px;
+      left: 20px;
+      font-size: 10px;
+      color: var(--border);
+    }
+
+    /* ═══════════════════════════════════════
+   LOADING / PROCESSING
+═══════════════════════════════════════ */
+    .processing-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 13, 18, .85);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg4);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin .8s linear infinite
+    }
+
+    .proc-status {
+      font-size: 14px;
+      color: var(--t2);
+      font-family: var(--fm);
+      animation: pulse 1.5s ease-in-out infinite
+    }
+
+    /* ═══════════════════════════════════════
+   NOTIFICATIONS / TOAST
+═══════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--r12);
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--t1);
+      box-shadow: var(--shadow);
+      z-index: 400;
+      animation: slideUp .3s var(--spring);
+    }
+
+    /* ═══════════════════════════════════════
+   QUIT CONFIRMATION
+═══════════════════════════════════════ */
+    .quit-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 13, 18, .7);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      animation: fadeIn .2s ease;
+    }
+
+    .quit-card {
+      background: var(--bg1);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r24);
+      padding: 32px;
+      width: 360px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-lg);
+      animation: popIn .3s var(--spring);
+    }
+
+    .quit-emoji {
+      font-size: 56px;
+      animation: wiggle .5s ease
+    }
+
+    .quit-title {
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    .quit-msg {
+      font-size: 14px;
+      color: var(--t2);
+      line-height: 1.6
+    }
+
+    .quit-btns {
+      display: flex;
+      gap: 10px;
+      width: 100%
+    }
+
+    .quit-btns .btn {
+      flex: 1
+    }
+
+    /* ═══════════════════════════════════════
+   MISC UTILS
+═══════════════════════════════════════ */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0
+    }
+
+    .mt8 {
+      margin-top: 8px
+    }
+
+    .mt12 {
+      margin-top: 12px
+    }
+
+    .mt16 {
+      margin-top: 16px
+    }
+
+    .mt24 {
+      margin-top: 24px
+    }
+
+    .flex {
+      display: flex
+    }
+
+    .items-center {
+      align-items: center
+    }
+
+    .justify-between {
+      justify-content: space-between
+    }
+
+    .gap8 {
+      gap: 8px
+    }
+
+    .gap12 {
+      gap: 12px
+    }
+
+    .gap16 {
+      gap: 16px
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .text-green {
+      color: var(--green)
+    }
+
+    .text-muted {
+      color: var(--t3)
+    }
+
+    .font-mono {
+      font-family: var(--fm)
+    }
+
+    .no-sessions {
+      text-align: center;
+      padding: 40px;
+      color: var(--t3)
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════
+     ONBOARDING
+═══════════════════════════════════════ -->
+  <div id="onboarding">
+    <div class="ob-step-dots">
+      <div class="ob-dot active" id="dot0"></div>
+      <div class="ob-dot" id="dot1"></div>
+      <div class="ob-dot" id="dot2"></div>
+    </div>
+
+    <!-- Step 1: Mascot -->
+    <div class="ob-step active" id="ob-step-0">
+      <div class="ob-header">
+        <div class="ob-title">Choose Your StudyBRO</div>
+        <div class="ob-sub">Your companion who'll cheer you through every session</div>
+      </div>
+      <div class="avatar-grid">
+        <div class="avatar-card" data-mascot="teddy" onclick="selectMascot('teddy',this)">
+          <span class="avatar-emoji">🧸</span>
+          <div class="avatar-name">Teddy</div>
+          <div class="avatar-personality">Warm & encouraging. Never lets you give up.</div>
+          <div class="ob-check">✓</div>
+        </div>
+        <div class="avatar-card" data-mascot="panda" onclick="selectMascot('panda',this)">
+          <span class="avatar-emoji">🐼</span>
+          <div class="avatar-name">Panda</div>
+          <div class="avatar-personality">Calm & focused. Meditates between sessions.</div>
+          <div class="ob-check">✓</div>
+        </div>
+        <div class="avatar-card" data-mascot="cat" onclick="selectMascot('cat',this)">
+          <span class="avatar-emoji">🐱</span>
+          <div class="avatar-name">Cat</div>
+          <div class="avatar-personality">Mysterious & sharp. Secretly your biggest fan.</div>
+          <div class="ob-check">✓</div>
+        </div>
+        <div class="avatar-card" data-mascot="dog" onclick="selectMascot('dog',this)">
+          <span class="avatar-emoji">🐶</span>
+          <div class="avatar-name">Dog</div>
+          <div class="avatar-personality">Enthusiastic & loyal. Celebrates every win.</div>
+          <div class="ob-check">✓</div>
+        </div>
+        <div class="avatar-card" data-mascot="frog" onclick="selectMascot('frog',this)">
+          <span class="avatar-emoji">🐸</span>
+          <div class="avatar-name">Frog</div>
+          <div class="avatar-personality">Chill & wise. Knows every study hack.</div>
+          <div class="ob-check">✓</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg ob-continue" id="ob-btn-0" onclick="nextObStep()">
+        Continue →
+      </button>
+    </div>
+
+    <!-- Step 2: Plant -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-header">
+        <div class="ob-title">Choose Your Growth Partner 🌱</div>
+        <div class="ob-sub">It grows when you focus. Take care of it.</div>
+      </div>
+      <div class="plant-grid">
+        <div class="plant-card" data-plant="monstera" onclick="selectPlant('monstera',this)">
+          <span class="plant-emoji">🌿</span>
+          <div class="plant-name">Monstera</div>
+          <div class="plant-type">Steady grower</div>
+          <div class="ob-check" style="display:none">✓</div>
+        </div>
+        <div class="plant-card" data-plant="cactus" onclick="selectPlant('cactus',this)">
+          <span class="plant-emoji">🌵</span>
+          <div class="plant-name">Cactus</div>
+          <div class="plant-type">Resilient survivor</div>
+          <div class="ob-check" style="display:none">✓</div>
+        </div>
+        <div class="plant-card" data-plant="flower" onclick="selectPlant('flower',this)">
+          <span class="plant-emoji">🌸</span>
+          <div class="plant-name">Flower</div>
+          <div class="plant-type">Blooms with effort</div>
+          <div class="ob-check" style="display:none">✓</div>
+        </div>
+        <div class="plant-card" data-plant="bonsai" onclick="selectPlant('bonsai',this)">
+          <span class="plant-emoji">🪴</span>
+          <div class="plant-name">Bonsai</div>
+          <div class="plant-type">Needs patience & care</div>
+          <div class="ob-check" style="display:none">✓</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg ob-continue" id="ob-btn-1" onclick="nextObStep()">
+        Finish Setup →
+      </button>
+    </div>
+
+    <!-- Step 3: Confirm -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-header">
+        <div class="ob-title">You're all set! 🎉</div>
+        <div class="ob-sub">Your study journey starts now</div>
+      </div>
+      <div class="ob-confirm">
+        <div class="confirm-duo">
+          <div class="confirm-item">
+            <div class="confirm-emoji" id="confirm-mascot-emoji">🐼</div>
+            <div class="confirm-label">Companion</div>
+            <div class="confirm-name" id="confirm-mascot-name">Panda</div>
+          </div>
+          <div class="confirm-plus">+</div>
+          <div class="confirm-item">
+            <div class="confirm-emoji" id="confirm-plant-emoji">🌿</div>
+            <div class="confirm-label">Plant</div>
+            <div class="confirm-name" id="confirm-plant-name">Monstera</div>
+          </div>
+        </div>
+        <div class="name-input-wrap">
+          <label>Name your companion</label>
+          <input class="input" id="companion-name-input" placeholder="e.g. Buds, Chip, Ember…" maxlength="16"
+            value="Buddy" />
+        </div>
+        <div class="confirm-msg">Ready to grow your knowledge — one session at a time.</div>
+        <button class="btn btn-primary btn-lg" onclick="finishOnboarding()" style="margin-top:8px">
+          Start Studying 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════ -->
+  <div id="app" style="display:none">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">🎧</div>
+      <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+        <span class="icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item" data-page="study" onclick="navigate('study',this)">
+        <span class="icon">📖</span>
+        <span class="nav-label">Study</span>
+      </button>
+      <button class="nav-item" data-page="focus" onclick="navigate('focus',this)">
+        <span class="icon">⏱</span>
+        <span class="nav-label">Focus</span>
+      </button>
+      <button class="nav-item" data-page="progress" onclick="navigate('progress',this)">
+        <span class="icon">📊</span>
+        <span class="nav-label">Stats</span>
+      </button>
+      <button class="nav-item" data-page="garden" onclick="navigate('garden',this)">
+        <span class="icon">🌱</span>
+        <span class="nav-label">Garden</span>
+      </button>
+      <button class="nav-item" data-page="companion" onclick="navigate('companion',this)">
+        <span class="icon" id="sidebar-mascot-icon">🐼</span>
+        <span class="nav-label">BRO</span>
+      </button>
+      <div class="sidebar-bottom">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-inner">
+          <div class="dash-hero">
+            <div class="dash-hero-text">
+              <h1>Hey there! Ready to study? 👋</h1>
+              <p>Upload your material and let's turn it into structured audio that actually sticks.</p>
+              <div class="btn-row">
+                <button class="btn btn-primary btn-lg" onclick="triggerUpload()">
+                  📄 Upload Material
+                </button>
+                <button class="btn btn-lg" onclick="showPasteModal()">
+                  ✍️ Paste Notes
+                </button>
+              </div>
+            </div>
+            <div class="dash-mascot" id="dash-mascot">🐼</div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-num text-green" id="stat-minutes">0</div>
+              <div class="stat-label">Minutes studied</div>
+              <div class="stat-sub">lifetime total</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" id="stat-sessions" style="color:var(--blue)">0</div>
+              <div class="stat-label">Sessions done</div>
+              <div class="stat-sub">keep going!</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" id="stat-streak" style="color:var(--amber)">0🔥</div>
+              <div class="stat-label">Day streak</div>
+              <div class="stat-sub" id="stat-streak-sub">Start your streak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" id="stat-plants" style="color:var(--rose)">0🌱</div>
+              <div class="stat-label">Plants grown</div>
+              <div class="stat-sub">garden growing</div>
+            </div>
+          </div>
+          <div class="section-label">Upload new material</div>
+          <div class="upload-area" id="upload-zone">
+            <input type="file" id="file-input" accept=".pdf,.txt" onchange="handleFileUpload(event)" />
+            <span class="upload-icon">📂</span>
+            <div class="upload-title">Drop a PDF or TXT file here</div>
+            <div class="upload-hint">or click to browse · PDF, TXT supported</div>
+          </div>
+          <div class="section-label mt16" id="recent-label" style="display:none">Recent Sessions</div>
+          <div class="recent-grid" id="recent-grid"></div>
+        </div>
+      </div>
+
+      <!-- ── STUDY ── -->
+      <div class="page" id="page-study">
+        <div class="study-layout" style="height:100vh;display:flex;flex-direction:column">
+          <!-- Top bar -->
+          <div class="study-topbar">
+            <div style="display:flex;align-items:center;gap:12px">
+              <button class="btn btn-ghost btn-sm" onclick="navigate('dashboard')">← Back</button>
+              <div class="study-session-name" id="study-session-title">No session loaded</div>
+              <span class="badge badge-blue" id="study-chunk-badge">0 chunks</span>
+            </div>
+            <div class="study-progress-wrap">
+              <div class="study-prog-label font-mono" id="study-prog-label">0 / 0</div>
+              <div class="prog-track">
+                <div class="prog-fill green" id="study-prog-fill" style="width:0%"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-amber" id="weak-badge" style="display:none">⚠ Weak areas</span>
+              <button class="btn btn-sm" id="revisit-btn" onclick="toggleRevisit()"
+                style="display:none;border-color:var(--amber);color:var(--amber)">🔁 Revisit Mode</button>
+              <button class="btn btn-ghost btn-sm" id="mute-btn" onclick="toggleMute()" title="Mute mascot">🔔</button>
+            </div>
+          </div>
+          <!-- Reader -->
+          <div class="study-reader" id="study-reader">
+            <div class="reader-inner" id="reader-inner">
+              <div style="text-align:center;padding:80px 20px;color:var(--t3)">
+                <div style="font-size:48px;margin-bottom:16px">📖</div>
+                <div style="font-size:16px;font-weight:600;color:var(--t2)">No session loaded</div>
+                <div style="font-size:14px;margin-top:8px">Go to Dashboard to upload or select material</div>
+                <button class="btn btn-primary mt16" onclick="navigate('dashboard')">← Go to Dashboard</button>
+              </div>
+            </div>
+          </div>
+          <!-- Player -->
+          <div class="study-player">
+            <div class="player-inner">
+              <div class="player-speed-row">
+                <span class="speed-label">Speed</span>
+                <input type="range" min="0.5" max="2" step="0.1" value="1" id="speed-slider"
+                  oninput="onSpeedChange(this.value)" style="flex:1" />
+                <span class="speed-val" id="speed-val">1.0×</span>
+                <span class="speed-label" style="margin-left:16px">Pause</span>
+                <input type="range" min="0.2" max="3" step="0.1" value="0.8" id="pause-slider"
+                  oninput="onPauseChange(this.value)" style="flex:1" />
+                <span class="speed-val" id="pause-val">0.8s</span>
+              </div>
+              <div class="study-bottom-bar">
+                <div class="mascot-mini">
+                  <div class="mascot-mini-emoji" id="study-mascot-emoji" onclick="mascotSpeak(true)">🐼</div>
+                  <div class="mascot-bubble-mini" id="mascot-bubble-mini" style="display:none"></div>
+                </div>
+                <div class="player-controls">
+                  <button class="ctrl-btn" onclick="prevChunk()" title="Previous">⏮</button>
+                  <button class="ctrl-btn" onclick="replayCurrent()" title="Replay">↺</button>
+                  <button class="play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+                  <button class="ctrl-btn" onclick="nextChunk()" title="Next">⏭</button>
+                  <button class="ctrl-btn" onclick="triggerQuiz()" title="Quiz" style="font-size:18px">🧠</button>
+                  <button class="ctrl-btn" onclick="triggerMasterQuiz()" title="Master Quiz" style="font-size:18px; color:var(--blue)">✨</button>
+                  <button class="ctrl-btn" onclick="triggerFlashcards()" title="Flashcards" style="font-size:18px">🗂️</button>
+                </div>
+                <div class="plant-mini">
+                  <div class="plant-mini-info">
+                    <div class="plant-mini-label font-mono" id="plant-stage-label">seed 0%</div>
+                    <div class="plant-mini-prog prog-track">
+                      <div class="prog-fill green" id="plant-study-prog" style="width:0%"></div>
+                    </div>
+                  </div>
+                  <div class="plant-mini-emoji" id="plant-study-emoji">🌱</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Quiz overlay -->
+        <div class="quiz-overlay hidden" id="quiz-overlay">
+          <div id="quiz-loading-wrap"></div>
+          <div class="quiz-header" id="quiz-content-wrap">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--t1)">🧠 Quick Recall</div>
+              <div style="font-size:11px;color:var(--t3);font-family:var(--fm)" id="quiz-topic-label"></div>
+            </div>
+            <div class="quiz-dots" id="quiz-dots"></div>
+          </div>
+          <div class="quiz-q" id="quiz-q"></div>
+          <div class="quiz-options" id="quiz-options"></div>
+          <div class="quiz-feedback hidden" id="quiz-feedback"></div>
+          <div style="display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="closeQuiz()">Skip</button>
+            <button class="btn btn-sm" id="quiz-next-btn" onclick="nextQuizQ()" style="display:none">Next →</button>
+          </div>
+        </div>
+
+        <!-- Flashcard overlay -->
+        <div class="fc-overlay hidden" id="fc-overlay">
+          <div class="fc-header" id="fc-header-wrap">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--t1)">🗂️ Flashcards</div>
+              <div style="font-size:11px;color:var(--t3);font-family:var(--fm)" id="fc-topic-label"></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span id="fc-count-label" style="font-size:12px;color:var(--t3);font-family:var(--fm);margin-top:2px">0/0</span>
+              <button class="btn btn-ghost btn-sm" onclick="closeFlashcards()" style="padding:4px">✕</button>
+            </div>
+          </div>
+          <div class="fc-card" id="fc-card" onclick="flipFlashcard()">
+            <div class="fc-face fc-front" id="fc-front"></div>
+            <div class="fc-face fc-back" id="fc-back"></div>
+          </div>
+          <div class="fc-controls" id="fc-controls">
+            <button class="btn btn-sm" onclick="nextFlashcard(false)" style="border-color:var(--rose);color:var(--rose)">Forgot it</button>
+            <button class="btn btn-sm" onclick="nextFlashcard(true)" style="border-color:var(--green);color:var(--green)">Got it</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── FOCUS TIMER ── -->
+      <div class="page" id="page-focus">
+        <div class="focus-layout">
+          <div style="font-size:28px;font-weight:800;letter-spacing:-.5px;text-align:center">Focus Timer ⏱</div>
+          <div class="timer-card">
+            <div class="timer-presets" id="timer-presets">
+              <div class="preset active" data-min="25" onclick="setTimerPreset(25,this)">25m</div>
+              <div class="preset" data-min="30" onclick="setTimerPreset(30,this)">30m</div>
+              <div class="preset" data-min="45" onclick="setTimerPreset(45,this)">45m</div>
+              <div class="preset" data-min="60" onclick="setTimerPreset(60,this)">60m</div>
+              <div class="preset" data-min="120" onclick="setTimerPreset(120,this)">2h</div>
+            </div>
+            <div class="timer-ring-wrap">
+              <svg class="timer-ring-svg" viewBox="0 0 200 200">
+                <circle class="ring-track" cx="100" cy="100" r="85" />
+                <circle class="ring-prog" id="ring-prog" cx="100" cy="100" r="85" stroke-dasharray="534"
+                  stroke-dashoffset="534" />
+              </svg>
+              <div class="timer-center">
+                <div class="timer-digits" id="timer-digits">25:00</div>
+                <div class="timer-mode" id="timer-mode-label">focus</div>
+              </div>
+            </div>
+            <div class="pomodoro-row" id="pomodoro-row">
+              <span style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-right:4px">SESSIONS</span>
+            </div>
+            <div class="timer-controls-row">
+              <button class="ctrl-btn" onclick="resetTimer()" title="Reset">↺</button>
+              <button class="timer-start" id="timer-start-btn" onclick="toggleTimer()">▶</button>
+              <button class="ctrl-btn" onclick="switchBreak()" title="Break" id="break-switch-btn">☕</button>
+            </div>
+            <div class="break-mode-banner hidden" id="break-banner">
+              ☕ Break time! Stretch, breathe, and let your mind rest. You earned it.
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:40px">
+            <div class="focus-mascot" id="focus-mascot">🐼</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+              <div class="focus-plant-display" id="focus-plant">🌱</div>
+              <div style="font-size:12px;color:var(--t3);font-family:var(--fm)" id="focus-plant-label">seed · 0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROGRESS ── -->
+      <div class="page" id="page-progress">
+        <div class="page-inner">
+          <div class="page-title">Your Progress 📊</div>
+          <div class="page-sub mt8">Track your growth over time</div>
+          <div class="progress-stats-grid mt24">
+            <div class="prog-stat">
+              <div class="prog-stat-num text-green" id="prog-minutes">0</div>
+              <div class="prog-stat-label">Total minutes</div>
+              <div style="font-size:13px;color:var(--t3);margin-top:4px">≈ <span id="prog-hours">0</span> hours</div>
+            </div>
+            <div class="prog-stat">
+              <div class="prog-stat-num" style="color:var(--blue)" id="prog-sessions">0</div>
+              <div class="prog-stat-label">Sessions</div>
+              <div style="font-size:13px;color:var(--t3);margin-top:4px" id="prog-avg">avg 0 min each</div>
+            </div>
+            <div class="prog-stat">
+              <div class="prog-stat-num" style="color:var(--amber)" id="prog-streak">0</div>
+              <div class="prog-stat-label">Day streak 🔥</div>
+              <div class="streak-row" id="streak-row" style="margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="mt24">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div class="section-label" style="margin-bottom:0">Weak Areas</div>
+              <button class="btn btn-sm" onclick="generateBetterNotes()" style="border-color:var(--green);color:var(--green)">⚡ Heal Weak Areas</button>
+            </div>
+            <div class="weak-list" id="weak-list">
+              <div class="text-muted" style="font-size:14px;padding:20px 0">No weak areas detected yet — keep studying!
+              </div>
+            </div>
+          </div>
+          <div class="mt24">
+            <div class="section-label">Quiz History</div>
+            <div id="quiz-history-list" style="display:flex;flex-direction:column;gap:8px">
+              <div class="text-muted" style="font-size:14px;padding:20px 0">No quizzes taken yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GARDEN ── -->
+      <div class="page" id="page-garden">
+        <div class="page-inner">
+          <div class="garden-header">
+            <div>
+              <div class="page-title">Your Garden 🌿</div>
+              <div class="page-sub mt8">Each plant = one completed session</div>
+            </div>
+            <div class="badge badge-green" id="garden-count">0 plants grown</div>
+          </div>
+          <div class="garden-grid" id="garden-grid">
+            <div class="garden-empty">
+              <div class="big-emoji">🌰</div>
+              <div style="font-weight:600;font-size:16px;color:var(--t2)">Your garden is empty</div>
+              <div style="font-size:14px">Complete focus sessions to grow plants</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPANION ── -->
+      <div class="page" id="page-companion">
+        <div class="page-inner">
+          <div class="page-title" style="margin-bottom:24px">Your Companion 🧸</div>
+          <div class="companion-layout">
+            <div class="companion-main">
+              <div class="companion-avatar" id="companion-avatar-big">🐼</div>
+              <div class="companion-name" id="companion-name-display">Buddy</div>
+              <div class="companion-mood badge badge-green" id="companion-mood-badge">● focused</div>
+              <div class="companion-speech" id="companion-speech-text">hey, ready to study?</div>
+              <button class="btn btn-ghost btn-sm" onclick="randomMascotLine()">💬 Say something</button>
+            </div>
+            <div class="companion-settings card" style="overflow-y:auto">
+              <div class="section-label">Choose Avatar</div>
+              <div class="companion-avatar-grid">
+                <div class="comp-avatar-option selected" data-mascot="panda" onclick="setMascotType('panda',this)">
+                  <span>🐼</span><span class="comp-avatar-label">Panda</span>
+                </div>
+                <div class="comp-avatar-option" data-mascot="teddy" onclick="setMascotType('teddy',this)">
+                  <span>🧸</span><span class="comp-avatar-label">Teddy</span>
+                </div>
+                <div class="comp-avatar-option" data-mascot="cat" onclick="setMascotType('cat',this)">
+                  <span>🐱</span><span class="comp-avatar-label">Cat</span>
+                </div>
+                <div class="comp-avatar-option" data-mascot="dog" onclick="setMascotType('dog',this)">
+                  <span>🐶</span><span class="comp-avatar-label">Dog</span>
+                </div>
+                <div class="comp-avatar-option" data-mascot="frog" onclick="setMascotType('frog',this)">
+                  <span>🐸</span><span class="comp-avatar-label">Frog</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="section-label">Accessories</div>
+              <div class="acc-row" id="acc-row">
+                <div class="acc-chip" data-acc="glasses" onclick="toggleAcc('glasses',this)">🕶️ Glasses</div>
+                <div class="acc-chip" data-acc="headphones" onclick="toggleAcc('headphones',this)">🎧 Headphones</div>
+                <div class="acc-chip" data-acc="crown" onclick="toggleAcc('crown',this)">👑 Crown</div>
+                <div class="acc-chip" data-acc="hoodie" onclick="toggleAcc('hoodie',this)">🧥 Hoodie</div>
+                <div class="acc-chip" data-acc="pencil" onclick="toggleAcc('pencil',this)">✏️ Pencil</div>
+              </div>
+              <div class="divider"></div>
+              <div class="section-label">Name</div>
+              <div style="display:flex;gap:8px">
+                <input class="input" id="companion-rename" placeholder="Name your BRO" maxlength="16" />
+                <button class="btn btn-primary btn-sm" onclick="renameMascot()" style="white-space:nowrap">Save</button>
+              </div>
+              <div class="divider"></div>
+              <div class="section-label">Settings</div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-label">Mascot messages</div>
+                  <div class="setting-sub">Show speech bubbles during study</div>
+                </div>
+                <button class="toggle on" id="mascot-toggle" onclick="toggleMascotMsgs(this)"></button>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-label">Dark mode</div>
+                  <div class="setting-sub">Toggle theme</div>
+                </div>
+                <button class="toggle" id="theme-toggle" onclick="toggleThemeToggle(this)"></button>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-label">API Key (Google Gemini)</div>
+                  <div class="setting-sub">For AI-powered quiz & structuring <a
+                      href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--green)">Get free
+                      key</a></div>
+                </div>
+              </div>
+              <input class="input mt8" id="api-key-input" type="password" placeholder="AIzaSy…"
+                style="font-family:var(--fm)" />
+              <button class="btn btn-sm mt8" onclick="saveApiKey()">Save Key</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .main -->
+
+  </div><!-- end #app -->
+
+  <!-- Paste modal -->
+  <div id="paste-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(11,13,18,.8);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+    <div class="card"
+      style="width:600px;max-width:95vw;display:flex;flex-direction:column;gap:16px;padding:28px;animation:popIn .3s var(--spring)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:18px;font-weight:700">Paste Your Notes</div>
+        <button class="btn btn-ghost btn-sm" onclick="closePasteModal()">✕</button>
+      </div>
+      <input class="input" id="session-title-input" placeholder="Session title (e.g. Chapter 3 – Photosynthesis)" />
+      <textarea class="input" id="paste-textarea"
+        placeholder="Paste your study material here…&#10;&#10;StudyBRO will split it into audio-ready chunks."
+        style="height:220px;resize:none;line-height:1.7"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--t3);font-family:var(--fm)" id="paste-char-count">0 chars</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="closePasteModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="processPastedText()">⚡ Structure & Load</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing overlay -->
+  <div class="processing-overlay hidden" id="processing-overlay">
+    <div class="spinner"></div>
+    <div style="font-size:16px;font-weight:600">Processing your material…</div>
+    <div class="proc-status" id="proc-status">Extracting text…</div>
+  </div>
+
+  <!-- Quit modal -->
+  <div class="quit-modal hidden" id="quit-modal">
+    <div class="quit-card">
+      <div class="quit-emoji" id="quit-mascot">🐼</div>
+      <div class="quit-title">Leaving already?</div>
+      <div class="quit-msg">If you stop now, your plant loses progress… You've come so far!</div>
+      <div class="quit-btns">
+        <button class="btn" onclick="closeQuitModal()">Keep Going 💪</button>
+        <button class="btn" onclick="confirmQuit()" style="color:var(--rose);border-color:var(--rose-bg)">Quit
+          Anyway</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════
+    //  APP STATE
+    // ═══════════════════════════════════════════════════
+    const STATE = {
+      // Mascot
+      mascotType: 'panda', mascotName: 'Buddy', accessories: [], mascotMuted: false,
+      mascotEmojis: { panda: '🐼', teddy: '🧸', cat: '🐱', dog: '🐶', frog: '🐸' },
+      plantType: 'monstera',
+      plantEmojis: { monstera: '🌿', cactus: '🌵', flower: '🌸', bonsai: '🪴' },
+      plantEmojisGrown: { monstera: '🌳', cactus: '🌵', flower: '🌺', bonsai: '🪴' },
+      plantEmojisStages: { monstera: ['🌱', '🌿', '🪴', '🌳'], cactus: ['🌱', '🌵', '🌵', '🌵'], flower: ['🌱', '🌷', '🌸', '🌺'], bonsai: ['🌱', '🌿', '🪴', '🪴'] },
+      // Sessions
+      sessions: [], currentSession: null,
+      // Study state
+      chunks: [], currentChunkIdx: 0, isPlaying: false, speed: 1.0, pauseSec: 0.8,
+      replayCount: 0, weakTopics: [], revisitMode: false,
+      // Plant
+      plantProgress: 0,
+      // Timer
+      timerMode: 25, timerRemaining: 25 * 60, timerRunning: false, isBreak: false,
+      pomodoroCount: 0, breakMode: 5,
+      // Stats
+      totalMinutes: 0, sessionsCompleted: 0, streak: 0, plantsGrown: 0,
+      quizHistory: [],
+      // API
+      apiKey: '',
+      // Misc
+      currentPage: 'dashboard', theme: 'dark', mascotMsgsOn: true,
+      lastMascotMsg: 0,
+    };
+
+    // Load from storage
+    function loadState() {
+      try {
+        const s = JSON.parse(localStorage.getItem('studybro_v2') || '{}');
+        ['mascotType', 'mascotName', 'accessories', 'plantType', 'sessions', 'totalMinutes',
+          'sessionsCompleted', 'streak', 'plantsGrown', 'quizHistory', 'apiKey', 'theme',
+          'mascotMsgsOn', 'weakTopics'].forEach(k => { if (s[k] !== undefined) STATE[k] = s[k] });
+        // Garden plants
+        if (s.garden) STATE.garden = s.garden; else STATE.garden = [];
+      } catch { }
+      // Backend API handles Gemini keys securely.
+    }
+    function saveState() {
+      try {
+        localStorage.setItem('studybro_v2', JSON.stringify({
+          mascotType: STATE.mascotType, mascotName: STATE.mascotName,
+          accessories: STATE.accessories, plantType: STATE.plantType,
+          sessions: STATE.sessions, totalMinutes: STATE.totalMinutes,
+          sessionsCompleted: STATE.sessionsCompleted, streak: STATE.streak,
+          plantsGrown: STATE.plantsGrown, quizHistory: STATE.quizHistory,
+          apiKey: STATE.apiKey, theme: STATE.theme, mascotMsgsOn: STATE.mascotMsgsOn,
+          weakTopics: STATE.weakTopics, garden: STATE.garden || [],
+        }));
+      } catch { }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ONBOARDING
+    // ═══════════════════════════════════════════════════
+    let selectedMascot = null, selectedPlant = null, obStep = 0;
+
+    function selectMascot(type, el) {
+      document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedMascot = type;
+      document.getElementById('ob-btn-0').classList.add('show');
+    }
+    function selectPlant(type, el) {
+      document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      // Show check
+      el.querySelector('.ob-check').style.display = 'flex';
+      selectedPlant = type;
+      document.getElementById('ob-btn-1').classList.add('show');
+    }
+    function nextObStep() {
+      if (obStep === 0 && !selectedMascot) return;
+      if (obStep === 1 && !selectedPlant) return;
+      document.getElementById(`ob-step-${obStep}`).classList.remove('active');
+      obStep++;
+      document.getElementById(`dot${obStep}`).classList.add('active');
+      const step = document.getElementById(`ob-step-${obStep}`);
+      step.classList.add('active');
+      if (obStep === 2) {
+        // Fill confirm
+        const mascotEmojis = { panda: '🐼', teddy: '🧸', cat: '🐱', dog: '🐶', frog: '🐸' };
+        const plantEmojis = { monstera: '🌿', cactus: '🌵', flower: '🌸', bonsai: '🪴' };
+        document.getElementById('confirm-mascot-emoji').textContent = mascotEmojis[selectedMascot];
+        document.getElementById('confirm-mascot-name').textContent = selectedMascot.charAt(0).toUpperCase() + selectedMascot.slice(1);
+        document.getElementById('confirm-plant-emoji').textContent = plantEmojis[selectedPlant];
+        document.getElementById('confirm-plant-name').textContent = selectedPlant.charAt(0).toUpperCase() + selectedPlant.slice(1);
+      }
+    }
+    function finishOnboarding() {
+      STATE.mascotType = selectedMascot || 'panda';
+      STATE.plantType = selectedPlant || 'monstera';
+      const nameInp = document.getElementById('companion-name-input').value.trim();
+      STATE.mascotName = nameInp || STATE.mascotName || 'Buddy';
+      if (!STATE.garden) STATE.garden = [];
+      
+      saveState();
+      document.getElementById('onboarding').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initApp();
+    }
+    function checkOnboarding() {
+      // intentionally bypassed so the starting choosing menu always shows
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  INIT APP
+    // ═══════════════════════════════════════════════════
+    function initApp() {
+      applyTheme(STATE.theme);
+      refreshAllMascotRefs();
+      renderDashboard();
+      renderCompanionPage();
+      renderProgressPage();
+      renderGarden();
+      initTimer();
+      setInterval(idleCheck, 45000);
+      // API key UI
+      if (STATE.apiKey) document.getElementById('api-key-input').value = STATE.apiKey;
+      // Mascot toggle
+      const tt = document.getElementById('theme-toggle');
+      if (STATE.theme === 'light') tt.classList.add('on');
+      // Welcome message
+      setTimeout(() => mascotSpeak(false, 'hey! ready to study? 👀'), 1500);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  NAVIGATION
+    // ═══════════════════════════════════════════════════
+    function navigate(page, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      if (btn) btn.classList.add('active');
+      else {
+        const nb = document.querySelector(`[data-page="${page}"]`);
+        if (nb) nb.classList.add('active');
+      }
+      STATE.currentPage = page;
+      if (page === 'progress') renderProgressPage();
+      if (page === 'garden') renderGarden();
+      if (page === 'dashboard') renderDashboard();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  THEME
+    // ═══════════════════════════════════════════════════
+    function toggleTheme() {
+      STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(STATE.theme);
+      saveState();
+    }
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      document.getElementById('theme-icon').textContent = t === 'dark' ? '☀️' : '🌙';
+      const tt = document.getElementById('theme-toggle');
+      if (tt) t === 'light' ? tt.classList.add('on') : tt.classList.remove('on');
+    }
+    function toggleThemeToggle(el) {
+      el.classList.toggle('on');
+      STATE.theme = el.classList.contains('on') ? 'light' : 'dark';
+      applyTheme(STATE.theme);
+      saveState();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  MASCOT SYSTEM
+    // ═══════════════════════════════════════════════════
+    const MASCOT_LINES = {
+      idle: ["hey, ready to study? 👀", "pick some material and let's go!", "i'm right here whenever you're ready 😊"],
+      focused: ["you're doing great! keep it up 🔥", "stay with it, you've got this", "focus looks good 👀", "in the zone! don't stop now"],
+      idle_warn: ["still with me? 😅", "hey... you there?", "come back! we were on a roll"],
+      complete: ["that was solid. proud of you. 🏆", "you crushed it! ", "session done — you're a legend 🌟"],
+      break: ["take a breather, you earned it ☕", "rest up — your brain needs it", "stretch, hydrate, come back fresh"],
+      quiz_right: ["CORRECT! you nailed it ⭐", "brilliant! that's the stuff", "yes!! knowledge acquired 🎓"],
+      quiz_wrong: ["don't worry, let's review that", "we'll get it next time 💪", "it's okay — reviewing makes it stick"],
+      plant: ["your plant is growing 🌱", "keep going, it's almost bloomed!", "focus = growth 🌿"],
+    };
+
+    function getMascotLine(ctx) {
+      const lines = MASCOT_LINES[ctx] || MASCOT_LINES.idle;
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+    function mascotSpeak(manual = false, forceLine = null) {
+      if (!STATE.mascotMsgsOn && !manual) return;
+      const now = Date.now();
+      if (!manual && now - STATE.lastMascotMsg < 35000) return;
+      STATE.lastMascotMsg = now;
+      const line = forceLine || getMascotLine(STATE.isPlaying ? 'focused' : 'idle');
+      showMascotBubble(line);
+    }
+    function showMascotBubble(text) {
+      const b = document.getElementById('mascot-bubble-mini');
+      if (!b) return;
+      b.textContent = text;
+      b.style.display = 'block';
+      clearTimeout(window._mascotTimer);
+      window._mascotTimer = setTimeout(() => { b.style.display = 'none' }, 3500);
+      // Companion page speech
+      const cs = document.getElementById('companion-speech-text');
+      if (cs) cs.textContent = text;
+    }
+    function randomMascotLine() { mascotSpeak(true) }
+    function toggleMute() {
+      STATE.mascotMsgsOn = !STATE.mascotMsgsOn;
+      document.getElementById('mute-btn').textContent = STATE.mascotMsgsOn ? '🔔' : '🔕';
+      saveState();
+    }
+    function toggleMascotMsgs(el) {
+      el.classList.toggle('on');
+      STATE.mascotMsgsOn = el.classList.contains('on');
+      saveState();
+    }
+    function idleCheck() {
+      if (!STATE.isPlaying && STATE.currentPage === 'study') mascotSpeak(false, getMascotLine('idle_warn'));
+    }
+    function refreshAllMascotRefs() {
+      const e = STATE.mascotEmojis[STATE.mascotType] || '🐼';
+      ['dash-mascot', 'study-mascot-emoji', 'focus-mascot', 'companion-avatar-big', 'quit-mascot', 'sidebar-mascot-icon']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = e; });
+      const nd = document.getElementById('companion-name-display');
+      if (nd) nd.textContent = STATE.mascotName;
+      const ri = document.getElementById('companion-rename');
+      if (ri) ri.value = STATE.mascotName;
+      // Mark selected in companion grid
+      document.querySelectorAll('.comp-avatar-option').forEach(o => {
+        o.classList.toggle('selected', o.dataset.mascot === STATE.mascotType);
+      });
+      document.getElementById('api-key-input').value = STATE.apiKey || '';
+    }
+    function setMascotType(type, el) {
+      STATE.mascotType = type;
+      document.querySelectorAll('.comp-avatar-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      refreshAllMascotRefs();
+      saveState();
+    }
+    function toggleAcc(acc, el) {
+      el.classList.toggle('active');
+      if (STATE.accessories.includes(acc)) STATE.accessories = STATE.accessories.filter(a => a !== acc);
+      else STATE.accessories = [...STATE.accessories, acc].slice(0, 3);
+      saveState();
+    }
+    function renameMascot() {
+      const v = document.getElementById('companion-rename').value.trim();
+      if (!v) return;
+      STATE.mascotName = v;
+      refreshAllMascotRefs();
+      saveState();
+      toast('Companion renamed to ' + v + ' 🎉');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  PLANT SYSTEM
+    // ═══════════════════════════════════════════════════
+    function getPlantEmoji(progress = STATE.plantProgress, type = STATE.plantType) {
+      const stages = STATE.plantEmojisStages[type] || ['🌱', '🌿', '🪴', '🌳'];
+      if (progress < 15) return '🌰';
+      if (progress < 35) return stages[0];
+      if (progress < 65) return stages[1];
+      if (progress < 90) return stages[2];
+      return stages[3];
+    }
+    function getPlantStageLabel(p) {
+      if (p < 15) return 'seed';
+      if (p < 35) return 'sprout';
+      if (p < 65) return 'growing';
+      if (p < 90) return 'budding';
+      return 'full bloom';
+    }
+    function updatePlantUI() {
+      const p = STATE.plantProgress, emoji = getPlantEmoji(p);
+      const els = ['plant-study-emoji', 'focus-plant'].map(id => document.getElementById(id)).filter(Boolean);
+      els.forEach(el => el.textContent = emoji);
+      const progEls = ['plant-study-prog'].map(id => document.getElementById(id)).filter(Boolean);
+      progEls.forEach(el => el.style.width = Math.min(100, p) + '%');
+      const sl = document.getElementById('plant-stage-label');
+      if (sl) sl.textContent = `${getPlantStageLabel(p)} ${Math.round(p)}%`;
+      const fl = document.getElementById('focus-plant-label');
+      if (fl) fl.textContent = `${getPlantStageLabel(p)} · ${Math.round(p)}%`;
+    }
+    function growPlant(amount) {
+      STATE.plantProgress = Math.min(100, STATE.plantProgress + amount);
+      updatePlantUI();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  TIMER SYSTEM
+    // ═══════════════════════════════════════════════════
+    let timerInterval = null;
+    const CIRC = 2 * Math.PI * 85; // ≈534
+
+    function initTimer() {
+      updateTimerUI();
+      updatePomodoroRow();
+      updatePlantUI();
+    }
+    function setTimerPreset(mins, el) {
+      if (STATE.timerRunning) return;
+      STATE.timerMode = mins;
+      STATE.timerRemaining = mins * 60;
+      document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      updateTimerUI();
+    }
+    function toggleTimer() {
+      if (STATE.timerRunning) pauseTimer();
+      else startTimer();
+    }
+    function startTimer() {
+      STATE.timerRunning = true;
+      document.getElementById('timer-start-btn').textContent = '⏸';
+      timerInterval = setInterval(timerTick, 1000);
+      mascotSpeak(false, "your plant is growing 🌱");
+    }
+    function pauseTimer() {
+      STATE.timerRunning = false;
+      document.getElementById('timer-start-btn').textContent = '▶';
+      clearInterval(timerInterval);
+    }
+    function resetTimer() {
+      pauseTimer();
+      STATE.timerRemaining = STATE.timerMode * 60;
+      STATE.isBreak = false;
+      updateTimerUI();
+      document.getElementById('break-banner').classList.add('hidden');
+    }
+    function switchBreak() {
+      pauseTimer();
+      STATE.isBreak = !STATE.isBreak;
+      STATE.timerRemaining = (STATE.isBreak ? 5 : STATE.timerMode) * 60;
+      updateTimerUI();
+      document.getElementById('break-banner').classList.toggle('hidden', !STATE.isBreak);
+      document.getElementById('break-switch-btn').textContent = STATE.isBreak ? '📚' : '☕';
+      if (STATE.isBreak) mascotSpeak(false, getMascotLine('break'));
+    }
+    function timerTick() {
+      STATE.timerRemaining = Math.max(0, STATE.timerRemaining - 1);
+      // Grow plant
+      if (!STATE.isBreak) {
+        const growRate = 100 / (STATE.timerMode * 60);
+        growPlant(growRate);
+        // Occasional plant message
+        if (STATE.timerRemaining % 120 === 0) mascotSpeak(false, getMascotLine('plant'));
+      }
+      updateTimerUI();
+      if (STATE.timerRemaining === 0) onTimerComplete();
+    }
+    function onTimerComplete() {
+      pauseTimer();
+      if (!STATE.isBreak) {
+        STATE.pomodoroCount++;
+        STATE.totalMinutes += STATE.timerMode;
+        STATE.sessionsCompleted++;
+        // Save plant to garden
+        if (STATE.plantProgress > 20) {
+          STATE.garden = [{
+            type: STATE.plantType, progress: Math.round(STATE.plantProgress),
+            date: new Date().toISOString(), duration: STATE.timerMode
+          }, ...(STATE.garden || [])].slice(0, 60);
+          STATE.plantsGrown++;
+        }
+        STATE.plantProgress = 0;
+        updateStreak();
+        saveState();
+        updateTimerUI();
+        updatePomodoroRow();
+        updatePlantUI();
+        mascotSpeak(false, getMascotLine('complete'));
+        toast('🎉 Session complete! Plant saved to garden.');
+        // Switch to break
+        setTimeout(() => switchBreak(), 1500);
+      } else {
+        mascotSpeak(false, "break's over! let's get back to it 📚");
+      }
+    }
+    function updateTimerUI() {
+      const m = String(Math.floor(STATE.timerRemaining / 60)).padStart(2, '0');
+      const s = String(STATE.timerRemaining % 60).padStart(2, '0');
+      document.getElementById('timer-digits').textContent = `${m}:${s}`;
+      document.getElementById('timer-mode-label').textContent = STATE.isBreak ? 'break' : 'focus';
+      const total = (STATE.isBreak ? 5 : STATE.timerMode) * 60;
+      const elapsed = total - STATE.timerRemaining;
+      const pct = elapsed / total;
+      const offset = CIRC * (1 - pct);
+      const rp = document.getElementById('ring-prog');
+      if (rp) { rp.style.strokeDashoffset = offset; rp.classList.toggle('break', STATE.isBreak); }
+    }
+    function updatePomodoroRow() {
+      const row = document.getElementById('pomodoro-row');
+      if (!row) return;
+      let html = '<span style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-right:4px">SESSIONS</span>';
+      for (let i = 0; i < Math.max(4, STATE.pomodoroCount + 1); i++) html += `<div class="pom-dot${i < STATE.pomodoroCount ? ' done' : ''}"></div>`;
+      row.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  FILE / CONTENT PROCESSING
+    // ═══════════════════════════════════════════════════
+    function triggerUpload() { document.getElementById('file-input').click() }
+    function showPasteModal() {
+      const m = document.getElementById('paste-modal');
+      m.style.display = 'flex';
+      setTimeout(() => document.getElementById('paste-textarea').focus(), 100);
+    }
+    function closePasteModal() { document.getElementById('paste-modal').style.display = 'none' }
+
+    document.getElementById('paste-textarea')?.addEventListener('input', function () {
+      document.getElementById('paste-char-count').textContent = this.value.length.toLocaleString() + ' chars';
+    });
+
+    async function handleFileUpload(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+      const title = file.name.replace(/\.[^.]+$/, '');
+      showProcessing('Reading file…');
+      let text = '';
+      if (file.name.endsWith('.pdf')) {
+        try { text = await extractPdfText(file) }
+        catch (e) { hideProcessing(); toast('PDF error: ' + e.message); return }
+      } else {
+        text = await file.text();
+      }
+      await processText(text, title);
+      evt.target.value = '';
+    }
+
+    async function processPastedText() {
+      const text = document.getElementById('paste-textarea').value.trim();
+      const title = document.getElementById('session-title-input').value.trim() || 'My Notes';
+      if (!text) { toast('Please paste some text first'); return }
+      closePasteModal();
+      await processText(text, title);
+    }
+
+    async function extractPdfText(file) {
+      // Simple PDF extraction via pdf.js CDN
+      return new Promise(async (resolve, reject) => {
+        try {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          script.onload = async () => {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const buf = await file.arrayBuffer();
+            const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+            let txt = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+              setStatus(`Extracting page ${i}/${pdf.numPages}…`);
+              const pg = await pdf.getPage(i);
+              const c = await pg.getTextContent();
+              txt += c.items.map(x => x.str).join(' ') + '\n\n';
+            }
+            resolve(txt.trim());
+          };
+          script.onerror = () => reject(new Error('PDF.js failed to load'));
+          if (window.pdfjsLib) {
+            // Already loaded
+            script.onload();
+          } else {
+            document.head.appendChild(script);
+          }
+        } catch (e) { reject(e) }
+      });
+    }
+
+    async function processText(rawText, title) {
+      setStatus('Structuring content…');
+      let chunks;
+      try {
+        chunks = await structureWithAI(rawText, title);
+      } catch (e) {
+        console.error("AI Structure error:", e);
+        chunks = structureLocally(rawText, title);
+        toast('AI unavailable, using local chunking');
+      }
+      const session = { id: Date.now(), title, chunks, created: new Date().toISOString() };
+      STATE.sessions = [session, ...STATE.sessions].slice(0, 30);
+      saveState();
+      hideProcessing();
+      loadSession(session);
+      navigate('study');
+      toast(`"${title}" loaded — ${chunks.filter(c => c.type === 'chunk').length} chunks ready`);
+      mascotSpeak(true, "Let's study! Remember to start your Focus Timer on the bottom bar to grow your seeds!");
+      setTimeout(() => toast('🌱 Start the timer to begin growing a plant!'), 3000);
+    }
+
+    function structureLocally(text, title) {
+      // Smart local chunking
+      const paragraphs = text.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 30);
+      const chunks = [];
+      let groupSize = 0;
+      paragraphs.forEach((p, i) => {
+        // Detect section-like lines
+        if (p.length < 80 && (p.endsWith(':') || /^[A-Z\d][\w\s,.-]{2,60}$/.test(p)) && i > 0) {
+          chunks.push({ type: 'section', text: p.replace(':', ''), topic: 'section' });
+          groupSize = 0;
+        } else {
+          // Split long paragraphs into ~60 word chunks
+          const words = p.split(/\s+/);
+          for (let j = 0; j < words.length; j += 55) {
+            const slice = words.slice(j, j + 55).join(' ');
+            if (slice.length > 20) chunks.push({ type: 'chunk', text: slice, topic: extractTopic(slice) });
+          }
+        }
+      });
+      // Add initial section if none
+      if (!chunks.find(c => c.type === 'section')) chunks.unshift({ type: 'section', text: title, topic: 'intro' });
+      return chunks;
+    }
+
+    function extractTopic(text) {
+      const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 4);
+      return words[0] || 'general';
+    }
+
+    async function structureWithAI(text, title) {
+      setStatus('AI structuring…');
+      const res = await fetch(`/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: `Convert this study material titled "${title}" into JSON chunks for audio dictation.\nReturn ONLY a JSON array. Each element: {"type":"section"|"chunk","text":"...","topic":"1-3 word tag"}\nRules: section=heading(4-10 words), chunk=2-5 sentences(30-60 words), add sections every 3-5 chunks.\nMaterial:\n${text.slice(0, 50000)}` }]
+          }],
+          generationConfig: { responseMimeType: "application/json", maxOutputTokens: 8192 }
+        })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      const data = await res.json();
+      let raw = data.candidates[0].content.parts[0].text;
+      let match = raw.match(/\[[\s\S]*\]/);
+      return JSON.parse(match ? match[0] : '[]');
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById('proc-status');
+      if (el) el.textContent = msg;
+    }
+    function showProcessing(msg) {
+      document.getElementById('processing-overlay').classList.remove('hidden');
+      setStatus(msg || 'Processing…');
+    }
+    function hideProcessing() { document.getElementById('processing-overlay').classList.add('hidden') }
+
+    // ═══════════════════════════════════════════════════
+    //  SESSION / READER
+    // ═══════════════════════════════════════════════════
+    function loadSession(session) {
+      STATE.currentSession = session;
+      STATE.chunks = session.chunks;
+      STATE.currentChunkIdx = 0;
+      STATE.isPlaying = false;
+      stopTTS();
+      renderReader();
+      updateStudyUI();
+    }
+
+    function renderReader() {
+      const inner = document.getElementById('reader-inner');
+      if (!inner) return;
+      const chunks = STATE.chunks;
+      if (!chunks || !chunks.length) { inner.innerHTML = '<div style="color:var(--t3);text-align:center;padding:60px">No content</div>'; return; }
+      let html = '';
+      let visibleCount = 0;
+      chunks.forEach((c, i) => {
+        if (STATE.revisitMode && c.type === 'chunk' && !STATE.weakTopics.includes(c.topic)) return;
+        if (c.type === 'section') {
+          html += `<div class="chunk-section-header">${c.text}</div>`;
+        } else {
+          html += `<div class="text-chunk" id="chunk-${i}" onclick="seekToChunk(${i})">
+            <input type="checkbox" class="chunk-checkbox" value="${i}" onclick="event.stopPropagation()">
+            ${c.text}
+          </div>`;
+          visibleCount++;
+        }
+      });
+      if (STATE.revisitMode && visibleCount === 0) {
+        html = '<div style="text-align:center;padding:60px;color:var(--t3)"><div style="font-size:32px;margin-bottom:12px">🌟</div><div style="font-weight:600">No weak areas to revisit!</div><div style="font-size:14px;margin-top:6px;color:var(--t2)">Switch back to Full Mode</div></div>';
+      }
+      inner.innerHTML = html;
+    }
+
+    function getChunkIndices() {
+      return STATE.chunks.map((c, i) => {
+        if (c.type === 'chunk') {
+          if (STATE.revisitMode && !STATE.weakTopics.includes(c.topic)) return null;
+          return i;
+        }
+        return null;
+      }).filter(i => i !== null);
+    }
+
+    function updateStudyUI() {
+      const session = STATE.currentSession;
+      if (!session) return;
+      document.getElementById('study-session-title').textContent = session.title;
+      const cIdx = getChunkIndices();
+      document.getElementById('study-chunk-badge').textContent = `${cIdx.length} chunks`;
+      const pos = cIdx.indexOf(STATE.currentChunkIdx);
+      const total = cIdx.length;
+      document.getElementById('study-prog-label').textContent = `${Math.max(0, pos) + 1} / ${total}`;
+      document.getElementById('study-prog-fill').style.width = `${total > 1 ? (pos / (total - 1)) * 100 : 0}%`;
+      document.getElementById('play-btn').textContent = STATE.isPlaying ? '⏸' : '▶';
+      // Highlight active chunk
+      document.querySelectorAll('.text-chunk').forEach(el => {
+        el.classList.remove('active');
+      });
+      const active = document.getElementById('chunk-' + STATE.currentChunkIdx);
+      if (active) { active.classList.add('active'); active.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      // Weak areas badge
+      const hasWeak = STATE.weakTopics.length > 0;
+      document.getElementById('weak-badge').style.display = hasWeak ? '' : 'none';
+      document.getElementById('revisit-btn').style.display = hasWeak ? '' : 'none';
+    }
+
+    function seekToChunk(idx) {
+      stopTTS();
+      STATE.currentChunkIdx = idx;
+      if (STATE.isPlaying) speakCurrentChunk();
+      else updateStudyUI();
+    }
+    function seekToChunkIdx(chunkIdx) {
+      const indices = getChunkIndices();
+      if (chunkIdx < 0 || chunkIdx >= indices.length) return;
+      STATE.currentChunkIdx = indices[chunkIdx];
+      updateStudyUI();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  TTS PLAYBACK
+    // ═══════════════════════════════════════════════════
+    let ttsReplayCount = 0;
+    function togglePlay() {
+      if (STATE.isPlaying) {
+        STATE.isPlaying = false;
+        stopTTS();
+        document.getElementById('play-btn').textContent = '▶';
+        mascotSpeak(false, "paused — come back soon! 👀");
+      } else {
+        if (!STATE.currentSession) { toast('Load a session first!'); return }
+        STATE.isPlaying = true;
+        document.getElementById('play-btn').textContent = '⏸';
+        speakCurrentChunk();
+        mascotSpeak(false, getMascotLine('focused'));
+      }
+    }
+    function speakCurrentChunk() {
+      if (!STATE.isPlaying) return;
+      const chunk = STATE.chunks[STATE.currentChunkIdx];
+      if (!chunk || chunk.type !== 'chunk') { advanceChunk(); return }
+      updateStudyUI();
+      const u = new SpeechSynthesisUtterance(chunk.text);
+      u.rate = STATE.speed; u.pitch = 1; u.volume = 1;
+      const voices = speechSynthesis.getVoices();
+      const preferred = voices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Google UK English Female') || v.name.includes('Aria'));
+      if (preferred) u.voice = preferred;
+      u.onend = () => {
+        if (!STATE.isPlaying) return;
+        // Mark as played
+        const el = document.getElementById('chunk-' + STATE.currentChunkIdx);
+        if (el) el.classList.add('played');
+        setTimeout(() => { if (STATE.isPlaying) advanceChunk() }, STATE.pauseSec * 1000);
+      };
+      u.onerror = () => { if (STATE.isPlaying) advanceChunk() };
+      speechSynthesis.speak(u);
+    }
+    function advanceChunk() {
+      const indices = getChunkIndices();
+      const pos = indices.indexOf(STATE.currentChunkIdx);
+      if (pos >= indices.length - 1) {
+        STATE.isPlaying = false;
+        document.getElementById('play-btn').textContent = '▶';
+        STATE.sessionsCompleted++;
+        STATE.totalMinutes += Math.round(indices.length * 0.5);
+        updateStreak();
+        saveState();
+        mascotSpeak(false, getMascotLine('complete'));
+        toast('🎉 Session complete!');
+        return;
+      }
+      STATE.currentChunkIdx = indices[pos + 1];
+      // Skip section headers (already done by type check in speakCurrentChunk)
+      speakCurrentChunk();
+    }
+    function stopTTS() { speechSynthesis.cancel() }
+    function prevChunk() {
+      stopTTS();
+      const indices = getChunkIndices();
+      const pos = indices.indexOf(STATE.currentChunkIdx);
+      if (pos > 0) { STATE.currentChunkIdx = indices[pos - 1]; if (STATE.isPlaying) speakCurrentChunk(); else updateStudyUI(); }
+    }
+    function nextChunk() {
+      stopTTS();
+      const indices = getChunkIndices();
+      const pos = indices.indexOf(STATE.currentChunkIdx);
+      if (pos < indices.length - 1) { STATE.currentChunkIdx = indices[pos + 1]; if (STATE.isPlaying) speakCurrentChunk(); else updateStudyUI(); }
+    }
+    function replayCurrent() {
+      stopTTS();
+      ttsReplayCount++;
+      if (ttsReplayCount >= 3 && STATE.speed > 0.7) {
+        STATE.speed = Math.max(0.7, STATE.speed - 0.1);
+        document.getElementById('speed-slider').value = STATE.speed;
+        document.getElementById('speed-val').textContent = STATE.speed.toFixed(1) + '×';
+        toast('Speed reduced to ' + STATE.speed.toFixed(1) + '× (adaptive)');
+      }
+      if (STATE.isPlaying) speakCurrentChunk();
+      else { STATE.isPlaying = true; document.getElementById('play-btn').textContent = '⏸'; speakCurrentChunk(); }
+    }
+    function onSpeedChange(v) {
+      STATE.speed = parseFloat(v);
+      document.getElementById('speed-val').textContent = parseFloat(v).toFixed(1) + '×';
+    }
+    function onPauseChange(v) {
+      STATE.pauseSec = parseFloat(v);
+      document.getElementById('pause-val').textContent = parseFloat(v).toFixed(1) + 's';
+    }
+    function toggleRevisit() {
+      STATE.revisitMode = !STATE.revisitMode;
+      const btn = document.getElementById('revisit-btn');
+      btn.textContent = STATE.revisitMode ? '📚 Full Mode' : '🔁 Revisit Mode';
+      btn.style.borderColor = STATE.revisitMode ? 'var(--green)' : 'var(--amber)';
+      btn.style.color = STATE.revisitMode ? 'var(--green)' : 'var(--amber)';
+
+      if (STATE.isPlaying) {
+        stopTTS();
+        STATE.isPlaying = false;
+      }
+
+      const cIdx = getChunkIndices();
+      if (cIdx.length > 0 && (!STATE.currentChunkIdx || !cIdx.includes(STATE.currentChunkIdx))) {
+        STATE.currentChunkIdx = cIdx[0];
+      }
+      renderReader();
+      updateStudyUI();
+    }
+    function saveApiKey() {
+      STATE.apiKey = document.getElementById('api-key-input').value.trim();
+      saveState();
+      toast('API key saved ✓');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  QUIZ SYSTEM
+    // ═══════════════════════════════════════════════════
+    let quizQuestions = [], quizCurrentQ = 0, quizAnswers = [], quizRevealed = false;
+
+    function triggerQuiz() {
+      if (!STATE.currentSession) { toast('Load a session first!'); return }
+      const chunk = STATE.chunks[STATE.currentChunkIdx];
+      if (!chunk || chunk.type !== 'chunk') { toast('Select a content chunk first'); return }
+      generateAIQuiz(chunk);
+    }
+    async function triggerMasterQuiz() {
+      if (!STATE.currentSession || !STATE.chunks) { toast('Load a session first!'); return; }
+      
+      const boxes = document.querySelectorAll('.chunk-checkbox:checked');
+      let combinedText = '';
+      let headerText = 'Master Quiz: Entire Document';
+      
+      if (boxes.length > 0) {
+        combinedText = Array.from(boxes).map(b => STATE.chunks[parseInt(b.value)].text).join('\n\n');
+        headerText = `Custom Quiz: ${boxes.length} Selected Chunks`;
+      } else {
+        combinedText = STATE.chunks.filter(c => c.type === 'chunk').map(c => c.text).join('\n\n');
+      }
+      
+      if (!combinedText) { toast('No text available for Quiz!'); return; }
+
+      const overlay = document.getElementById('quiz-overlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('quiz-loading-wrap').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner" style="margin:0 auto 12px"></div><div style="color:var(--t2);font-size:13px">Generating Quiz…</div></div>';
+      
+      const header = document.getElementById('quiz-content-wrap');
+      if (header) header.style.display = 'none';
+      document.getElementById('quiz-q').style.display = 'none';
+      document.getElementById('quiz-options').style.display = 'none';
+      
+      try {
+        const res = await fetch(`/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `Generate 5 deep MCQ recall questions covering concepts across this ENTIRE study material.\nReturn ONLY JSON array: [{"question":"...","options":["A...","B...","C...","D..."],"correct":0,"explanation":"..."}]\nMaterial:\n${combinedText.slice(0, 30000)}` }] }],
+            generationConfig: { responseMimeType: "application/json", maxOutputTokens: 8192 }
+          })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const data = await res.json();
+        let raw = data.candidates[0].content.parts[0].text;
+        let match = raw.match(/\[[\s\S]*\]/);
+        quizQuestions = JSON.parse(match ? match[0] : '[]');
+        if (!quizQuestions || quizQuestions.length === 0) throw new Error('No Master questions');
+        renderQuizOverlay(headerText);
+      } catch (e) {
+        console.error('Master Quiz error:', e);
+        closeQuiz();
+        toast('Master Quiz AI unavailable.');
+      }
+    }
+    function generateLocalQuiz(chunk) {
+      const text = chunk.text;
+      const words = text.split(/\W+/).filter(w => w.length > 4);
+      quizQuestions = [{
+        question: `Which concept is central to: "${text.slice(0, 80)}…"?`,
+        options: ['Focus and attention', 'Passive reading', 'Background noise', 'Multitasking'],
+        correct: 0,
+        explanation: 'Active engagement with content improves retention significantly.'
+      }, {
+        question: `This content is best described as:`,
+        options: ['A definition', 'An explanation', 'A comparison', 'An argument'],
+        correct: 1,
+        explanation: 'The chunk explains a concept in structured form.'
+      }, {
+        question: `What would you study NEXT after this section?`,
+        options: ['Review this again', 'Move to next concept', 'Take a break', 'Quiz yourself'],
+        correct: 3,
+        explanation: 'Active recall through quizzing reinforces learning.'
+      }];
+      showQuizUI(chunk.topic || 'this section');
+    }
+    async function generateAIQuiz(chunk) {
+      const overlay = document.getElementById('quiz-overlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('quiz-loading-wrap').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner" style="margin:0 auto 12px"></div><div style="color:var(--t2);font-size:13px">Generating quiz…</div></div>';
+      
+      const header = document.getElementById('quiz-content-wrap');
+      if (header) header.style.display = 'none';
+      document.getElementById('quiz-q').style.display = 'none';
+      document.getElementById('quiz-options').style.display = 'none';
+      try {
+        const res = await fetch(`/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: `Generate 3 MCQ recall questions for this study chunk. Topic: ${chunk.topic || 'general'}. Content: "${chunk.text}"\nReturn ONLY JSON array: [{"question":"...","options":["A...","B...","C...","D..."],"correct":0,"explanation":"..."}]` }]
+            }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const data = await res.json();
+        let raw = data.candidates[0].content.parts[0].text;
+        let match = raw.match(/\[[\s\S]*\]/);
+        quizQuestions = JSON.parse(match ? match[0] : '[]');
+        if (!quizQuestions || quizQuestions.length === 0) throw new Error('No questions generated');
+        renderQuizOverlay(chunk.topic || 'this chunk');
+      } catch (e) {
+        console.error('AI Quiz error:', e);
+        generateLocalQuiz(chunk);
+      }
+    }
+    function showQuizUI(topic) {
+      renderQuizOverlay(topic);
+    }
+    function renderQuizOverlay(topic) {
+      quizCurrentQ = 0; quizAnswers = []; quizRevealed = false;
+      const overlay = document.getElementById('quiz-overlay');
+      overlay.classList.remove('hidden');
+      
+      document.getElementById('quiz-loading-wrap').innerHTML = '';
+      const header = document.getElementById('quiz-content-wrap');
+      if (header) header.style.display = 'flex';
+      document.getElementById('quiz-q').style.display = 'block';
+      document.getElementById('quiz-options').style.display = 'flex';
+      
+      renderQuizQuestion();
+    }
+    function renderQuizQuestion() {
+      if (quizCurrentQ >= quizQuestions.length) { closeQuiz(); return }
+      const q = quizQuestions[quizCurrentQ];
+      document.getElementById('quiz-q').textContent = q.question;
+      document.getElementById('quiz-topic-label').textContent = `Question ${quizCurrentQ + 1} of ${quizQuestions.length}`;
+      // Dots
+      const dots = document.getElementById('quiz-dots');
+      dots.innerHTML = quizAnswers.map(a => `<div class="quiz-dot ${a ? 'pass' : 'fail'}"></div>`).join('') + ''.padStart(quizQuestions.length - quizCurrentQ, 'x').split('x').filter(Boolean).map(() => '<div class="quiz-dot"></div>').join('');
+      // Options
+      const opts = document.getElementById('quiz-options');
+      opts.innerHTML = q.options.map((o, i) => `<button class="quiz-opt" onclick="selectQuizOpt(${i})" id="qopt-${i}">${o}</button>`).join('');
+      // Feedback
+      document.getElementById('quiz-feedback').classList.add('hidden');
+      document.getElementById('quiz-next-btn').style.display = 'none';
+      quizRevealed = false;
+    }
+    function selectQuizOpt(i) {
+      if (quizRevealed) return;
+      quizRevealed = true;
+      const q = quizQuestions[quizCurrentQ];
+      const correct = i === q.correct;
+      document.querySelectorAll('.quiz-opt').forEach((el, j) => {
+        if (j === q.correct) el.classList.add('correct');
+        else if (j === i && !correct) el.classList.add('wrong');
+        el.disabled = true;
+      });
+      const fb = document.getElementById('quiz-feedback');
+      fb.classList.remove('hidden', 'good', 'bad');
+      fb.classList.add(correct ? 'good' : 'bad');
+      fb.textContent = (correct ? '✅ ' : '❌ ') + q.explanation;
+      quizAnswers.push(correct);
+      document.getElementById('quiz-next-btn').style.display = 'block';
+      // Mascot react
+      mascotSpeak(false, getMascotLine(correct ? 'quiz_right' : 'quiz_wrong'));
+      // Track weak topic
+      if (!correct) {
+        const topic = STATE.chunks[STATE.currentChunkIdx]?.topic || 'general';
+        if (!STATE.weakTopics.includes(topic)) {
+          STATE.weakTopics = [...STATE.weakTopics, topic];
+          saveState();
+          renderProgressPage();
+          document.getElementById('weak-badge').style.display = '';
+          document.getElementById('revisit-btn').style.display = '';
+        }
+      }
+      // Save to quiz history
+      if (quizCurrentQ === quizQuestions.length - 1) {
+        STATE.quizHistory = [{ topic: STATE.chunks[STATE.currentChunkIdx]?.topic || 'general', score: quizAnswers.filter(Boolean).length, total: quizQuestions.length, date: new Date().toISOString() }, ...STATE.quizHistory].slice(0, 50);
+        saveState();
+      }
+    }
+    function nextQuizQ() { quizCurrentQ++; renderQuizQuestion() }
+    function closeQuiz() { document.getElementById('quiz-overlay').classList.add('hidden') }
+
+    // ──────────────────────────────────────────────────────────
+    //  FLASHCARDS & WEAK AREAS AI
+    // ──────────────────────────────────────────────────────────
+    let fcCards = [], fcCurrentIdx = 0;
+    function triggerFlashcards() {
+      if (!STATE.currentSession) { toast('Load a session first!'); return }
+      const chunk = STATE.chunks[STATE.currentChunkIdx];
+      if (!chunk || chunk.type !== 'chunk') { toast('Select a content chunk first'); return }
+      generateAIFlashcards(chunk);
+    }
+    async function generateAIFlashcards(chunk) {
+      const overlay = document.getElementById('fc-overlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('fc-card').style.display='none';
+      document.getElementById('fc-controls').style.display='none';
+      document.getElementById('fc-header-wrap').innerHTML = '<div style="text-align:center;padding:20px;width:100%"><div class="spinner" style="margin:0 auto 12px"></div><div style="color:var(--t2);font-size:13px">Generating flashcards…</div></div>';
+      
+      try {
+        const res = await fetch(`/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `Generate 3 distinct study flashcards for this study chunk. Topic: ${chunk.topic||'general'}. Content: "${chunk.text}"\nReturn ONLY JSON array: [{"front":"Concept/Question...","back":"Explanation..."}]` }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const data = await res.json();
+        let raw = data.candidates[0].content.parts[0].text;
+        let match = raw.match(/\[[\s\S]*\]/);
+        fcCards = JSON.parse(match ? match[0] : '[]');
+        if (!fcCards || fcCards.length === 0) throw new Error('No flashcards');
+        renderFlashcardOverlay(chunk.topic || 'this chunk');
+      } catch (e) {
+        console.error('FC error:', e);
+        closeFlashcards();
+        toast('Error generating flashcards.');
+      }
+    }
+    function renderFlashcardOverlay(topic) {
+      fcCurrentIdx = 0;
+      document.getElementById('fc-header-wrap').innerHTML = `
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--t1)">🗂️ Flashcards</div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--fm)" id="fc-topic-label">${topic}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="fc-count-label" style="font-size:12px;color:var(--t3);font-family:var(--fm);margin-top:2px">0/0</span>
+          <button class="btn btn-ghost btn-sm" onclick="closeFlashcards()" style="padding:4px">✕</button>
+        </div>
+      `;
+      document.getElementById('fc-card').style.display='block';
+      document.getElementById('fc-controls').style.display='flex';
+      renderFlashcardCard();
+    }
+    function renderFlashcardCard() {
+      if(fcCurrentIdx >= fcCards.length) { closeFlashcards(); mascotSpeak(true, "All flashcards done! Great job!"); return; }
+      const c = fcCards[fcCurrentIdx];
+      document.getElementById('fc-card').classList.remove('flipped');
+      document.getElementById('fc-front').textContent = c.front;
+      document.getElementById('fc-back').textContent = c.back;
+      document.getElementById('fc-count-label').textContent = `${fcCurrentIdx+1}/${fcCards.length}`;
+    }
+    function flipFlashcard() { document.getElementById('fc-card').classList.toggle('flipped'); }
+    function nextFlashcard(known) {
+      if(!known) {
+        const t = document.getElementById('fc-topic-label').textContent;
+        if(t && !STATE.weakTopics.includes(t)) { STATE.weakTopics.push(t); saveState(); }
+      }
+      fcCurrentIdx++;
+      setTimeout(renderFlashcardCard, 100);
+    }
+    function closeFlashcards() { document.getElementById('fc-overlay').classList.add('hidden') }
+
+    async function generateBetterNotes() {
+      if (STATE.weakTopics.length === 0) { toast('No weak areas to heal yet!'); return; }
+      
+      setStatus('Healing Weak Areas with AI...');
+      try {
+        const res = await fetch(`/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `I am struggling with these study topics: ${STATE.weakTopics.join(', ')}. Please write a comprehensive, easy-to-understand study guide explaining these concepts clearly to a beginner. Use simple analogies.` }] }]
+          })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const data = await res.json();
+        let raw = data.candidates[0].content.parts[0].text;
+        
+        await processText(raw, "Healed Weak Areas");
+        STATE.weakTopics = [];
+        saveState();
+      } catch(e) {
+        console.error('Better notes error:', e);
+        hideProcessing();
+        toast('Error generating better notes.');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  DASHBOARD RENDER
+    // ═══════════════════════════════════════════════════
+    function renderDashboard() {
+      document.getElementById('stat-minutes').textContent = STATE.totalMinutes;
+      document.getElementById('stat-sessions').textContent = STATE.sessionsCompleted;
+      document.getElementById('stat-streak').textContent = STATE.streak + '🔥';
+      document.getElementById('stat-plants').textContent = (STATE.garden || []).length + '🌱';
+      const grid = document.getElementById('recent-grid');
+      const label = document.getElementById('recent-label');
+      if (!STATE.sessions.length) { grid.innerHTML = ''; label.style.display = 'none'; return }
+      label.style.display = '';
+      grid.innerHTML = STATE.sessions.map((s, i) => {
+        const ccount = s.chunks.filter(c => c.type === 'chunk').length;
+        const ago = timeAgo(s.created);
+        return `<div class="session-card" onclick="loadSessionAndNavigate(${i})" style="animation-delay:${i * 0.05}s">
+      <div class="session-card-title">${s.title}</div>
+      <div class="session-card-row">
+        <span class="badge badge-blue">${ccount} chunks</span>
+        <span class="session-card-meta">${ago}</span>
+      </div>
+      <div class="prog-track mt8"><div class="prog-fill blue" style="width:${Math.random() * 60 + 20}%"></div></div>
+    </div>`
+      }).join('');
+    }
+    function loadSessionAndNavigate(idx) {
+      loadSession(STATE.sessions[idx]);
+      navigate('study');
+      mascotSpeak(true, "Let's study! Remember to run the Focus Timer so your plant grows!");
+      toast('🌱 Start the timer on the bottom bar to grow your plant!');
+    }
+    function timeAgo(iso) {
+      const diff = Date.now() - new Date(iso).getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return 'just now';
+      if (m < 60) return m + 'm ago';
+      const h = Math.floor(m / 60);
+      if (h < 24) return h + 'h ago';
+      return Math.floor(h / 24) + 'd ago';
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  PROGRESS PAGE
+    // ═══════════════════════════════════════════════════
+    function renderProgressPage() {
+      document.getElementById('prog-minutes').textContent = STATE.totalMinutes;
+      document.getElementById('prog-hours').textContent = (STATE.totalMinutes / 60).toFixed(1);
+      document.getElementById('prog-sessions').textContent = STATE.sessionsCompleted;
+      document.getElementById('prog-avg').textContent = STATE.sessionsCompleted > 0 ? `avg ${Math.round(STATE.totalMinutes / STATE.sessionsCompleted)} min each` : 'avg 0 min each';
+      document.getElementById('prog-streak').textContent = STATE.streak;
+      // Streak row – last 7 days visual
+      const row = document.getElementById('streak-row');
+      const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      row.innerHTML = days.map((_, i) => `<div class="streak-day${i < STATE.streak ? ' done' : ''}"></div>`).join('');
+      // Weak areas
+      const wl = document.getElementById('weak-list');
+      if (!STATE.weakTopics.length) {
+        wl.innerHTML = '<div class="text-muted" style="font-size:14px;padding:20px 0">No weak areas yet — keep studying!</div>';
+      } else {
+        wl.innerHTML = STATE.weakTopics.map(t => `<div class="weak-item">
+      <div class="weak-item-topic">${t}</div>
+      <div class="weak-item-score badge badge-rose">needs review</div>
+    </div>`).join('');
+      }
+      // Quiz history
+      const ql = document.getElementById('quiz-history-list');
+      if (!STATE.quizHistory.length) {
+        ql.innerHTML = '<div class="text-muted" style="font-size:14px;padding:20px 0">No quizzes taken yet</div>';
+      } else {
+        ql.innerHTML = STATE.quizHistory.slice(0, 10).map(q => {
+          const pct = Math.round((q.score / q.total) * 100);
+          return `<div class="quiz-history-item">
+        <div style="font-size:14px;font-weight:500">${q.topic || 'general'}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="badge ${pct >= 70 ? 'badge-green' : pct >= 50 ? 'badge-amber' : 'badge-rose'}">${q.score}/${q.total} · ${pct}%</span>
+          <span style="font-size:11px;color:var(--t3);font-family:var(--fm)">${timeAgo(q.date)}</span>
+        </div>
+      </div>`
+        }).join('');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  GARDEN
+    // ═══════════════════════════════════════════════════
+    function renderGarden() {
+      const grid = document.getElementById('garden-grid');
+      const count = document.getElementById('garden-count');
+      const garden = STATE.garden || [];
+      count.textContent = `${garden.length} plant${garden.length !== 1 ? 's' : ''} grown`;
+      if (!garden.length) {
+        grid.innerHTML = `<div class="garden-empty"><div class="big-emoji">🌰</div><div style="font-weight:600;font-size:16px;color:var(--t2)">Your garden is empty</div><div style="font-size:14px">Complete focus sessions to grow plants</div></div>`;
+        return;
+      }
+      grid.innerHTML = garden.map((p, i) => {
+        const emoji = getPlantEmoji(p.progress, p.type);
+        const date = new Date(p.date).toLocaleDateString('en', { month: 'short', day: 'numeric' });
+        return `<div class="garden-plant-card" style="animation-delay:${i * 0.04}s">
+      <div class="garden-plant-emoji">${emoji}</div>
+      <div style="font-size:12px;font-weight:600;text-transform:capitalize">${p.type}</div>
+      <div class="garden-plant-date">${date}</div>
+      <div class="garden-plant-dur">${p.duration}min session</div>
+      <div class="garden-plant-prog prog-track">
+        <div class="prog-fill green" style="width:${p.progress}%"></div>
+      </div>
+    </div>`
+      }).join('');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  COMPANION PAGE
+    // ═══════════════════════════════════════════════════
+    function renderCompanionPage() {
+      refreshAllMascotRefs();
+      // Accessories
+      document.querySelectorAll('.acc-chip').forEach(el => {
+        el.classList.toggle('active', STATE.accessories.includes(el.dataset.acc));
+      });
+      const mt = document.getElementById('mascot-toggle');
+      if (mt) STATE.mascotMsgsOn ? mt.classList.add('on') : mt.classList.remove('on');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  STREAK
+    // ═══════════════════════════════════════════════════
+    function updateStreak() {
+      const today = new Date().toDateString();
+      const last = STATE.lastStudyDate;
+      if (last === today) return;
+      if (last) {
+        const diff = (new Date(today) - new Date(last)) / (1000 * 60 * 60 * 24);
+        if (diff <= 1) STATE.streak++;
+        else STATE.streak = 1;
+      } else { STATE.streak = 1 }
+      STATE.lastStudyDate = today;
+      renderProgressPage();
+      renderDashboard();
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  DRAG & DROP UPLOAD
+    // ═══════════════════════════════════════════════════
+    const uz = document.getElementById('upload-zone');
+    uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag') });
+    uz.addEventListener('dragleave', () => uz.classList.remove('drag'));
+    uz.addEventListener('drop', async e => {
+      e.preventDefault(); uz.classList.remove('drag');
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      const fake = { target: { files: [file] } }; handleFileUpload(fake);
+    });
+
+    // ═══════════════════════════════════════════════════
+    //  TOAST
+    // ═══════════════════════════════════════════════════
+    function toast(msg, dur = 3000) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.remove('hidden');
+      clearTimeout(window._toastT);
+      window._toastT = setTimeout(() => el.classList.add('hidden'), dur);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  QUIT MODAL
+    // ═══════════════════════════════════════════════════
+    function showQuitModal() { document.getElementById('quit-modal').classList.remove('hidden') }
+    function closeQuitModal() { document.getElementById('quit-modal').classList.add('hidden') }
+    function confirmQuit() {
+      closeQuitModal();
+      STATE.isPlaying = false; stopTTS();
+      STATE.plantProgress = Math.max(0, STATE.plantProgress - 20);
+      updatePlantUI();
+      navigate('dashboard');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  BOOT
+    // ═══════════════════════════════════════════════════
+    loadState();
+    checkOnboarding();
+    // Preload voices
+    window.addEventListener('load', () => { speechSynthesis.getVoices() });
+    speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices() };
+  </script>
+</body>
+
+</html>
